@@ -8,7 +8,7 @@ namespace APIProgressTracker
 {
     public abstract class ProgressTrackerAPI
     {
-        private const string SERVER = "www.remotemysql.com";
+        private const string SERVER = "remotemysql.com";
         private const string DATABASE = "progresstracker";
         private const string UID = "TMrArME2SE";
         private const string PASSWORD = "kJTKB2snGQ";
