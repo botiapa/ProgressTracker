@@ -1,0 +1,14 @@
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\bin\Debug\netcoreapp3.0\ProgressTracker.exe
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\ProgressTracker.csprojAssemblyReference.cache
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\MainWindow.g.cs
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\App.g.cs
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\ProgressTracker_MarkupCompile.cache
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\ProgressTracker_MarkupCompile.lref
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\MainWindow.baml
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\ProgressTracker.g.resources
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\ProgressTracker.csproj.CoreCompileInputs.cache
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\ProgressTracker.AssemblyInfoInputs.cache
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\ProgressTracker.AssemblyInfo.cs
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\ProgressTracker.pdb
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\bin\Debug\netcoreapp3.0\MySqlConnector.dll
+D:\Visual Studio Shits\ProgressTracker\ProgressTracker\obj\Debug\netcoreapp3.0\ProgressTracker.csproj.CopyComplete
