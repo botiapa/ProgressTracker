@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFProgressTracker", "WPFPr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIProgressTracker", "APIProgressTracker\APIProgressTracker.csproj", "{46EE2506-A98B-47C5-A555-478030D9711A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEBProgressTracker", "WEBProgressTracker\WEBProgressTracker.csproj", "{8D996D66-0CAC-47E4-8EEF-BA43EC1270E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{46EE2506-A98B-47C5-A555-478030D9711A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46EE2506-A98B-47C5-A555-478030D9711A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46EE2506-A98B-47C5-A555-478030D9711A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D996D66-0CAC-47E4-8EEF-BA43EC1270E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D996D66-0CAC-47E4-8EEF-BA43EC1270E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D996D66-0CAC-47E4-8EEF-BA43EC1270E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D996D66-0CAC-47E4-8EEF-BA43EC1270E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
