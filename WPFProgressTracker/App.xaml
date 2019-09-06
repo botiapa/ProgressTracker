@@ -4,6 +4,13 @@
              xmlns:local="clr-namespace:WPFProgressTracker"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <FontFamily x:Key="Roboto">pack://application:,,,/Fonts/Roboto/#Roboto</FontFamily>
+            <FontFamily x:Key="Roboto Black">pack://application:,,,/Fonts/Roboto/#Roboto Black</FontFamily>
+            <FontFamily x:Key="Roboto Bold">pack://application:,,,/Fonts/Roboto/Bold/#Roboto</FontFamily>
+            <FontFamily x:Key="Roboto Light">pack://application:,,,/Fonts/Roboto/#Roboto Light</FontFamily>
+            <FontFamily x:Key="Roboto Medium">pack://application:,,,/Fonts/Roboto/#Roboto Medium</FontFamily>
+            <FontFamily x:Key="Roboto Thin">pack://application:,,,/Fonts/Roboto/#Roboto Thin</FontFamily>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

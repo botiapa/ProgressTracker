@@ -4,10 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFProgressTracker"
+        xmlns:controls="clr-namespace:WPFProgressTracker.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button x:Name="btn_test" Content="Connect" HorizontalAlignment="Left" Margin="328,172,0,0" VerticalAlignment="Top" Height="58" Width="72" Click="btn_test_click"/>
+        <!--<Button x:Name="btn_test" Content="Connect" HorizontalAlignment="Left" Margin="328,172,0,0" VerticalAlignment="Top" Height="58" Width="72" Click="btn_test_click"/>-->
 
+        <!-- MESSAGE HOLDER -->
+        <WrapPanel x:Name="MessageHolder" Background="#222831">
+            <controls:MessageControl/>
+            <controls:MessageControl/>
+            <controls:MessageControl/>
+            <controls:MessageControl/>
+            <controls:MessageControl/>
+        </WrapPanel>
     </Grid>
 </Window>
