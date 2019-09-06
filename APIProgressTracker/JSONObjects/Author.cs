@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace APIProgressTracker.JSON
+namespace APIProgressTracker.JSONObjects
 {
-    class Message
+    class Author
     {
 
     }
