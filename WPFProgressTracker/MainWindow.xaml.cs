@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using APIProgressTracker;
+using System;
+using System.Windows;
 
 namespace WPFProgressTracker
 {
@@ -14,6 +16,8 @@ namespace WPFProgressTracker
 
         private void btn_test_click(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine("Bigd");
+            ProgressTrackerAPI.Init();
             
         }
     }

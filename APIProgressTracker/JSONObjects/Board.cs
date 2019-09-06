@@ -4,7 +4,7 @@ using System.Text;
 
 namespace APIProgressTracker.JSONObjects
 {
-    class Board
+    public class Board
     {
     }
 }

@@ -4,8 +4,11 @@ using System.Text;
 
 namespace APIProgressTracker.JSONObjects
 {
-    class Author
+    public class Author
     {
+        public string Name;
+        public string Image;
 
+        
     }
 }
