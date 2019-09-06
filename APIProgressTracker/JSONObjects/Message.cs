@@ -6,5 +6,6 @@ namespace APIProgressTracker.JSON
 {
     class Message
     {
+        
     }
 }
