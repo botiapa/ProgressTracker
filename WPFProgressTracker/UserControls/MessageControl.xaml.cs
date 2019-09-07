@@ -1,4 +1,5 @@
-﻿using System;
+﻿using APIProgressTracker.JSON;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -28,6 +29,17 @@ namespace WPFProgressTracker.Controls
         {
             InitializeComponent();
             DataContext = this;
+        }
+
+        public MessageControl(Message message)
+        {
+            InitializeComponent();
+            DataContext = this;
+
+            Title = message.Title;
+            Description = message.TextContents;
+            AvatarUrl = message.Author.ImageUrl;
+            Progress = message.ProgressPercent;
         }
     }
 }

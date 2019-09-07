@@ -35,11 +35,7 @@ namespace WPFProgressTracker
             ProgressTrackerAPI.Init();
             Message testmsg = new Message("Test title", "LOREM IPSUM HÁT MIZSENI LOREM IPSUM HÁT MIZSENI LOREM IPSUM HÁT MIZSENI", 34, new Author("Faszjancsi", "http://fanaru.com/futurama/image/69754-futurama-zoidberg-avatar.jpg"));
 
-            var msgControl = new MessageControl();
-            msgControl.Title = testmsg.Title;
-            msgControl.Description = testmsg.TextContents;
-            msgControl.AvatarUrl = testmsg.Author.ImageUrl;
-            msgControl.Progress = testmsg.ProgressPercent;
+            var msgControl = new MessageControl(testmsg);
 
             MessageHolder.Children.Add(msgControl);
         }

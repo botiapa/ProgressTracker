@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
-using APIProgressTracker.JSON;
 using MySql.Data.MySqlClient;
-using Newtonsoft;
 using Newtonsoft.Json;
 
 namespace APIProgressTracker
@@ -41,7 +38,7 @@ namespace APIProgressTracker
             }
             catch(MySqlException e)
             {
-                MessageBox.Show(e.ToString());
+                System.Windows.Forms.MessageBox.Show(e.ToString());
             }
         }
 
