@@ -25,7 +25,6 @@ namespace WPFProgressTracker
 
             foreach (var msg in messages)
                 MessageHolder.Children.Add(new MessageControl(msg));
-
         }
     }
 }
