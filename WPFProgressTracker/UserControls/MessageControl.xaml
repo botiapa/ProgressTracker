@@ -21,7 +21,7 @@
                 <Border Grid.Column="0" BorderBrush="#d65a31" BorderThickness="1" VerticalAlignment="Top" CornerRadius="50">
                     <Ellipse VerticalAlignment="Top" Width="50" Height="50">
                         <Ellipse.Fill>
-                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding AvatarUrl}"/>
+                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Avatar}"/>
                         </Ellipse.Fill>
                     </Ellipse>
                 </Border>

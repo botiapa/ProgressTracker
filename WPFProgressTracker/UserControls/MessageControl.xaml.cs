@@ -1,16 +1,7 @@
 ﻿using APIProgressTracker.JSON;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using APIProgressTracker;
 
 namespace WPFProgressTracker.Controls
 {
@@ -22,7 +13,7 @@ namespace WPFProgressTracker.Controls
 
         public string Title { get; set; }
         public string Description { get; set; }
-        public string AvatarUrl { get; set; }
+        public BitmapImage Avatar { get; set; }
         public double Progress { get; set; }
 
         public MessageControl()
@@ -38,7 +29,7 @@ namespace WPFProgressTracker.Controls
 
             Title = message.Title;
             Description = message.TextContents;
-            AvatarUrl = message.Author.ImageUrl;
+            Avatar = ProgressTrackerAPI.Base64StringToBitmap(message.Author.ImageUrl);
             Progress = message.ProgressPercent;
         }
     }

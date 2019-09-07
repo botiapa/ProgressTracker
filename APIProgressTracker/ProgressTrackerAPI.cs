@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Windows.Media.Imaging;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
@@ -7,6 +9,7 @@ namespace APIProgressTracker
 {
     public static class ProgressTrackerAPI
     {
+        #region Init process
         private const string SERVER = "remotemysql.com";
         private const string DATABASE = "TMrArME2SE";
         private const string UID = "TMrArME2SE";
@@ -38,10 +41,12 @@ namespace APIProgressTracker
             }
             catch(MySqlException e)
             {
-                System.Windows.Forms.MessageBox.Show(e.ToString());
+                Console.WriteLine(e);
             }
         }
+        #endregion
 
+        #region MySql thingies
         public static MySqlQuery SQLQuery(string query)
         {
             MySqlCommand mySqlCommand = new MySqlCommand(query, sqlConnection);
@@ -79,11 +84,28 @@ namespace APIProgressTracker
 
             return true;
         }
+        #endregion
 
         #region Actual API calls
         public static void SendNewMessage(JSON.Message message)
         {
             var obj = JsonConvert.SerializeObject(message);
+        }
+        #endregion
+
+        #region Base64 decoder
+        public static BitmapImage Base64StringToBitmap(string base64String)
+        {
+            byte[] imgBytes = Convert.FromBase64String(base64String);
+
+            BitmapImage bitmapImage = new BitmapImage();
+            MemoryStream ms = new MemoryStream(imgBytes);
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = ms;
+            bitmapImage.EndInit();
+
+            //Image object
+            return bitmapImage;
         }
         #endregion
     }
