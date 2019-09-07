@@ -6,10 +6,10 @@
              xmlns:local="clr-namespace:WPFProgressTracker.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border CornerRadius="6" Margin="20" Background="#393e46" MaxWidth="350">
+    <Border CornerRadius="4" Margin="20" Background="#393e46" MaxWidth="350">
         <StackPanel>
-            <Border CornerRadius="6,6,0,0" Background="#eeeeee" MinHeight="35">
-                <TextBlock Text="This is a fucking title!" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="18" FontFamily="{StaticResource Roboto Bold}" Foreground="Black"/>
+            <Border CornerRadius="4,4,0,0" Background="#eeeeee" MinHeight="28">
+                <TextBlock Text="This is a fucking title!" VerticalAlignment="Center" Margin="5,3,5,0" FontSize="18" FontFamily="{StaticResource Roboto Bold}" Foreground="Black" x:Name="Title"/>
             </Border>
             
             <Grid Margin="8,10,8,0">
@@ -21,15 +21,15 @@
                 <Border Grid.Column="0" BorderBrush="#d65a31" BorderThickness="1" VerticalAlignment="Top" CornerRadius="50">
                     <Ellipse VerticalAlignment="Top" Width="50" Height="50">
                         <Ellipse.Fill>
-                            <ImageBrush Stretch="UniformToFill" ImageSource="https://i.ytimg.com/vi/36eTEsgg1nY/maxresdefault.jpg" />
+                            <ImageBrush Stretch="UniformToFill" ImageSource="https://i.ytimg.com/vi/36eTEsgg1nY/maxresdefault.jpg" x:Name="AuthorImg"/>
                         </Ellipse.Fill>
                     </Ellipse>
                 </Border>
 
-                <TextBlock Grid.Column="1" TextWrapping="WrapWithOverflow" FontSize="15" Foreground="#eeeeee" VerticalAlignment="Center" FontFamily="{StaticResource Roboto Light}" Margin="10,0,0,10" Text="Há mizseni tes Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum"/>
+                <TextBlock Grid.Column="1" TextWrapping="WrapWithOverflow" FontSize="15" Foreground="#eeeeee" VerticalAlignment="Center" FontFamily="{StaticResource Roboto Light}" Margin="10,0,0,10" Text="Há mizseni tes Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum" x:Name="Description"/>
             </Grid>
             <Border>
-                <Rectangle RadiusX="0" RadiusY="6" Height="30" Fill="Green"/>
+                <Rectangle Margin="0,0,0,0" RadiusX="0" RadiusY="6" Height="10" Fill="Green" x:Name="Progress"/>
             </Border>
             
         </StackPanel>

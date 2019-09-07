@@ -12,7 +12,7 @@
 
         <!-- MESSAGE HOLDER -->
         <WrapPanel x:Name="MessageHolder" Background="#222831">
-            <controls:MessageControl/>
+            <controls:MessageControl Loaded="MessageControl_Loaded" x:Name="mc_1"/>
             <controls:MessageControl/>
             <controls:MessageControl/>
             <controls:MessageControl/>
