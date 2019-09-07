@@ -2,6 +2,7 @@
 using APIProgressTracker.JSON;
 using APIProgressTracker.JSONObjects;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using WPFProgressTracker.Controls;
 
@@ -33,11 +34,14 @@ namespace WPFProgressTracker
         private void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
             ProgressTrackerAPI.Init();
-            Message testmsg = new Message("Test title", "LOREM IPSUM HÁT MIZSENI LOREM IPSUM HÁT MIZSENI LOREM IPSUM HÁT MIZSENI", 34, new Author("Faszjancsi", "http://fanaru.com/futurama/image/69754-futurama-zoidberg-avatar.jpg"));
+            MySqlQuery msgs = ProgressTrackerAPI.SQLQuery("SELECT * FROM progresstracker");
 
-            var msgControl = new MessageControl(testmsg);
+            foreach (List<object> card in msgs.objects)
+            {
+                Message msg = Message.fromJson(card[1].ToString());
 
-            MessageHolder.Children.Add(msgControl);
+                MessageHolder.Children.Add(new MessageControl(msg));
+            }
         }
     }
 }

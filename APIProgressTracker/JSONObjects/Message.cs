@@ -42,5 +42,15 @@ namespace APIProgressTracker.JSON
             ProgressPercent = progresspercent;
             Author = author;
         }
+
+        public static Message fromJson(string json)
+        {
+            return JsonConvert.DeserializeObject<Message>(json);
+        }
+
+        public static string toJson(Message message)
+        {
+            return JsonConvert.SerializeObject(message);
+        }
     }
 }
