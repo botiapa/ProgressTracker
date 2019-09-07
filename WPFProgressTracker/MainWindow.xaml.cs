@@ -12,6 +12,7 @@ namespace WPFProgressTracker
         public MainWindow()
         {
             InitializeComponent();
+            ProgressTrackerAPI.Init();
         }
 
         private void btn_test_click(object sender, RoutedEventArgs e)

@@ -44,7 +44,7 @@ namespace APIProgressTracker
                 sqlConnection.Open();
                 MessageBox.Show("It should work");
                 MySqlQuery test = SQLQuery("SELECT * FROM progresstracker");
-                MessageBox.Show(test.success.ToString());
+                MessageBox.Show(test.success.ToString() + "\n" + test.objects[0][0] + "\n" + test.objects[0][1]);
 
             }
             catch(MySqlException e)
