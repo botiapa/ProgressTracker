@@ -9,12 +9,10 @@
     <Border CornerRadius="6" Margin="20" Background="#393e46" MaxWidth="350">
         <StackPanel>
             <Border CornerRadius="6,6,0,0" Background="#eeeeee" MinHeight="35">
-                <StackPanel>
-                    <TextBlock Text="This is a fucking title!" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="18" FontFamily="{StaticResource Roboto}"/>
-                </StackPanel>
+                <TextBlock Text="This is a fucking title!" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="18" FontFamily="{StaticResource Roboto Bold}" Foreground="Black"/>
             </Border>
             
-            <Grid Margin="5">
+            <Grid Margin="8,10,8,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
@@ -28,8 +26,12 @@
                     </Ellipse>
                 </Border>
 
-                <TextBlock Grid.Column="1" TextWrapping="WrapWithOverflow" FontSize="15" Foreground="#eeeeee" VerticalAlignment="Center" FontFamily="{StaticResource Roboto Thin}" Margin="10,0,0,10" Text="Há mizseni tes Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum"/>
+                <TextBlock Grid.Column="1" TextWrapping="WrapWithOverflow" FontSize="15" Foreground="#eeeeee" VerticalAlignment="Center" FontFamily="{StaticResource Roboto Light}" Margin="10,0,0,10" Text="Há mizseni tes Lorem Ipsum Lorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem IpsumLorem Ipsum"/>
             </Grid>
+            <Border>
+                <Rectangle RadiusX="0" RadiusY="6" Height="30" Fill="Green"/>
+            </Border>
+            
         </StackPanel>
         
     </Border>
