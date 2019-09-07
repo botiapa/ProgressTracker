@@ -1,7 +1,8 @@
-﻿using APIProgressTracker.JSON;
+﻿using APIProgressTracker.JSONObjects;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using APIProgressTracker;
+using WPFProgressTracker.Misc;
 
 namespace WPFProgressTracker.Controls
 {
@@ -10,7 +11,6 @@ namespace WPFProgressTracker.Controls
     /// </summary>
     public partial class MessageControl : UserControl
     {
-
         public string Title { get; set; }
         public string Description { get; set; }
         public BitmapImage Avatar { get; set; }
@@ -29,7 +29,7 @@ namespace WPFProgressTracker.Controls
 
             Title = message.Title;
             Description = message.TextContents;
-            Avatar = ProgressTrackerAPI.Base64StringToBitmap(message.Author.ImageUrl);
+            Avatar = ImageHelper.Base64StringToBitmap(message.Author.ImageUrl);
             Progress = message.ProgressPercent;
         }
     }

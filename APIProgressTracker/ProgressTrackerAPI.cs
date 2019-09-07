@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Media.Imaging;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using APIProgressTracker.JSONObjects;
 
 namespace APIProgressTracker
 {
@@ -27,6 +27,9 @@ namespace APIProgressTracker
             builder.Database = DATABASE;
             builder.Port = PORT;
             builder.SslMode = MySqlSslMode.None;
+
+            
+            
 
             string connString = builder.ToString();
 
@@ -87,25 +90,22 @@ namespace APIProgressTracker
         #endregion
 
         #region Actual API calls
-        public static void SendNewMessage(JSON.Message message)
+        public static void SendNewMessage(Message message)
         {
-            var obj = JsonConvert.SerializeObject(message);
+            var json = JsonConvert.SerializeObject(message);
+            
         }
-        #endregion
 
-        #region Base64 decoder
-        public static BitmapImage Base64StringToBitmap(string base64String)
+        public static IEnumerable<Message> GetMessages()
         {
-            byte[] imgBytes = Convert.FromBase64String(base64String);
+            MySqlQuery msgs = SQLQuery("SELECT * FROM progresstracker");
 
-            BitmapImage bitmapImage = new BitmapImage();
-            MemoryStream ms = new MemoryStream(imgBytes);
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = ms;
-            bitmapImage.EndInit();
+            foreach (List<object> card in msgs.objects)
+            {
+                Message msg = JsonConvert.DeserializeObject<Message>(card[1].ToString());
+                yield return msg;
+            }
 
-            //Image object
-            return bitmapImage;
         }
         #endregion
     }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace APIProgressTracker.JSON
+namespace APIProgressTracker.JSONObjects
 {
     public class Message
     {

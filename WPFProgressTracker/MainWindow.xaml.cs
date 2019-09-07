@@ -1,5 +1,5 @@
 ﻿using APIProgressTracker;
-using APIProgressTracker.JSON;
+using APIProgressTracker.JSONObjects;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Windows;
@@ -20,14 +20,12 @@ namespace WPFProgressTracker
         private void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
             ProgressTrackerAPI.Init();
-            MySqlQuery msgs = ProgressTrackerAPI.SQLQuery("SELECT * FROM progresstracker");
 
-            foreach (List<object> card in msgs.objects)
-            {
-                Message msg = JsonConvert.DeserializeObject<Message>(card[1].ToString());
+            var messages = ProgressTrackerAPI.GetMessages();
 
+            foreach (var msg in messages)
                 MessageHolder.Children.Add(new MessageControl(msg));
-            }
+
         }
     }
 }

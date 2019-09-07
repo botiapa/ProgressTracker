@@ -30,7 +30,7 @@
             </Grid>
 
             <!-- PROGRESS BAR -->
-            <local:RoundedProgressBar Progress="{Binding Progress}" CornerRadius="0,0,4,4"/>
+            <local:RoundedProgressBar Margin="0,5,0,0" Progress="{Binding Progress}" CornerRadius="0,0,4,4"/>
 
         </StackPanel>
         
