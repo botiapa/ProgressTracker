@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using APIProgressTracker.JSON;
 using MySql.Data.MySqlClient;
 using Newtonsoft;
@@ -9,9 +11,10 @@ namespace APIProgressTracker
     public abstract class ProgressTrackerAPI
     {
         private const string SERVER = "remotemysql.com";
-        private const string DATABASE = "progresstracker";
+        private const string DATABASE = "TMrArME2SE";
         private const string UID = "TMrArME2SE";
         private const string PASSWORD = "kJTKB2snGQ";
+        private const uint PORT = 3306;
         public static MySqlConnection sqlConnection;
 
         ProgressTrackerAPI()
@@ -27,6 +30,8 @@ namespace APIProgressTracker
             builder.UserID = UID;
             builder.Password = PASSWORD;
             builder.Database = DATABASE;
+            builder.Port = PORT;
+            builder.SslMode = MySqlSslMode.None;
 
             string connString = builder.ToString();
 
@@ -34,19 +39,60 @@ namespace APIProgressTracker
 
             try
             {
-                Console.WriteLine("Connect");
+                MessageBox.Show("Connect");
                 sqlConnection = new MySqlConnection(connString);
                 sqlConnection.Open();
-                Console.WriteLine("It should work");
+                MessageBox.Show("It should work");
+                MySqlQuery test = SQLQuery("SELECT * FROM progresstracker");
+                MessageBox.Show(test.success.ToString());
+
             }
             catch(MySqlException e)
             {
-                Console.WriteLine(e);
+                MessageBox.Show(e.ToString());
             }
         }
-    
+
+        public static MySqlQuery SQLQuery(string query)
+        {
+            MySqlCommand mySqlCommand = new MySqlCommand(query, sqlConnection);
+            var reader = mySqlCommand.ExecuteReader();
+
+            List<List<object>> readObjs;
+            readObjs = new List<List<object>>();
+
+            bool success = false;
+
+            while (reader.Read())
+            {
+                List<object> insertList = new List<object>();
+
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    insertList.Add(reader.GetValue(i));
+                }
+
+                readObjs.Add(insertList);
+                insertList = null;
+
+            }
+            success = reader.HasRows;
+
+            reader.Close();
+
+            return new MySqlQuery(readObjs, success);
+        }
+
+        public bool SQLExecute(string query)
+        {
+            MySqlCommand executeCmd = new MySqlCommand(query, sqlConnection);
+            var executer = executeCmd.ExecuteNonQuery();
+
+            return true;
+        }
+
         #region Actual API calls
-        public void SendNewMessage(Message message)
+        public void SendNewMessage(JSON.Message message)
         {
             var obj = JsonConvert.SerializeObject(message);
             string buzievagy = "Perhaps";
@@ -62,5 +108,17 @@ namespace APIProgressTracker
             }
         }
         #endregion
+    }
+
+    public class MySqlQuery
+    {
+        public List<List<object>> objects;
+        public bool success;
+
+        public MySqlQuery(List<List<object>> listIn, bool status)
+        {
+            this.objects = listIn;
+            this.success = status;
+        }
     }
 }
