@@ -1,6 +1,7 @@
 ﻿using APIProgressTracker;
 using APIProgressTracker.JSON;
 using APIProgressTracker.JSONObjects;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -38,7 +39,7 @@ namespace WPFProgressTracker
 
             foreach (List<object> card in msgs.objects)
             {
-                Message msg = Message.fromJson(card[1].ToString());
+                Message msg = JsonConvert.DeserializeObject<Message>(card[1].ToString());
 
                 MessageHolder.Children.Add(new MessageControl(msg));
             }

@@ -15,6 +15,7 @@ namespace APIProgressTracker.JSON
         public short ProgressPercent;
         public Author Author;
 
+        [JsonConstructor]
         public Message(string uid, string title, string textcontent, string image, short progresspercent, Author author)
         {
             UID = uid;
@@ -43,14 +44,9 @@ namespace APIProgressTracker.JSON
             Author = author;
         }
 
-        public static Message fromJson(string json)
+        public string toJson()
         {
-            return JsonConvert.DeserializeObject<Message>(json);
-        }
-
-        public static string toJson(Message message)
-        {
-            return JsonConvert.SerializeObject(message);
+            return JsonConvert.SerializeObject(this);
         }
     }
 }
