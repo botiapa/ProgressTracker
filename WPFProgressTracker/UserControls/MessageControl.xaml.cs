@@ -18,9 +18,16 @@ namespace WPFProgressTracker.Controls
     /// </summary>
     public partial class MessageControl : UserControl
     {
+
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string AvatarUrl { get; set; }
+        public double Progress { get; set; }
+
         public MessageControl()
         {
             InitializeComponent();
+            DataContext = this;
         }
     }
 }

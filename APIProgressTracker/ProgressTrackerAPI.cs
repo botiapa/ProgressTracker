@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Windows;
 using APIProgressTracker.JSON;
 using MySql.Data.MySqlClient;
 using Newtonsoft;
@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace APIProgressTracker
 {
-    public abstract class ProgressTrackerAPI
+    public static class ProgressTrackerAPI
     {
         private const string SERVER = "remotemysql.com";
         private const string DATABASE = "TMrArME2SE";
@@ -16,11 +16,6 @@ namespace APIProgressTracker
         private const string PASSWORD = "kJTKB2snGQ";
         private const uint PORT = 3306;
         public static MySqlConnection sqlConnection;
-
-        ProgressTrackerAPI()
-        {
-
-        }
 
         public static void Init()
         {
@@ -80,7 +75,7 @@ namespace APIProgressTracker
             return new MySqlQuery(readObjs, success);
         }
 
-        public bool SQLExecute(string query)
+        public static bool SQLExecute(string query)
         {
             MySqlCommand executeCmd = new MySqlCommand(query, sqlConnection);
             var executer = executeCmd.ExecuteNonQuery();
@@ -89,20 +84,9 @@ namespace APIProgressTracker
         }
 
         #region Actual API calls
-        public void SendNewMessage(JSON.Message message)
+        public static void SendNewMessage(JSON.Message message)
         {
             var obj = JsonConvert.SerializeObject(message);
-            string buzievagy = "Perhaps";
-            switch(buzievagy)
-            {
-                case "MEHET MINDED":
-                    Console.Write("yeees");
-                    break;
-
-                case "No Homo Erectus":
-                    Console.Write("sad boy");
-                    break;
-            }
         }
         #endregion
     }
