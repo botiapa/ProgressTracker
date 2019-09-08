@@ -4,6 +4,12 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UseWPF>true</UseWPF>
+    <AssemblyName>Progress Tracker</AssemblyName>
+    <Version>0.0.1</Version>
+    <Company>GPSoft</Company>
+    <Authors>Gabor, Botond</Authors>
+    <Description>This is very good</Description>
+    <Copyright>lololol</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,6 +40,21 @@
     <Resource Include="Fonts\Roboto\Roboto-Medium.ttf" />
     <Resource Include="Fonts\Roboto\Roboto-Regular.ttf" />
     <Resource Include="Fonts\Roboto\Roboto-Thin.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
