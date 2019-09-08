@@ -8,12 +8,107 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         Loaded="MainWindowLoaded">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <Duration x:Key="OpenDuration">
+                0:0:0.2
+            </Duration>
+            <Storyboard x:Key="NewTaskStoryboard">
+                <ColorAnimation Storyboard.TargetName="NewTaskButton" Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" From="{Binding ElementName=NewTaskButton, Path=Background.(SolidColorBrush.Color)}" To="White" Duration="0:0:0.10"/>
+                <ColorAnimation Storyboard.TargetName="NewTaskText" Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)" From="{Binding ElementName=NewTaskButton, Path=Background.(SolidColorBrush.Color)}" To="White" Duration="0:0:0.10"/>
+                <DoubleAnimation BeginTime="0:0:0.10" Storyboard.TargetName="NewTaskBorder" Storyboard.TargetProperty="Width" From="0" To="350" Duration="{StaticResource OpenDuration}"/>
+                <DoubleAnimation BeginTime="0:0:0.10" Storyboard.TargetName="NewTaskBorder" Storyboard.TargetProperty="Height" From="0" To="350" Duration="{StaticResource OpenDuration}"/>
+            </Storyboard>
+            <Storyboard x:Key="NewTaskStoryboardReverse">
+                <DoubleAnimation Storyboard.TargetName="NewTaskBorder" Storyboard.TargetProperty="Width" From="350" To="0" Duration="{StaticResource OpenDuration}"/>
+                <DoubleAnimation Storyboard.TargetName="NewTaskBorder" Storyboard.TargetProperty="Height" From="350" To="0" Duration="{StaticResource OpenDuration}"/>
+            </Storyboard>
+            <Storyboard x:Key="NewTaskButtonHover">
+                <ColorAnimation Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" From="#393e46" To="White" Duration="0:0:0.10"/>
+            </Storyboard>
+            <Storyboard x:Key="NewTaskButtonHoverReverse">
+                <ColorAnimation Storyboard.TargetProperty="Background.(SolidColorBrush.Color)" From="#393e46" To="#393e46" Duration="0:0:0.10"/>
+            </Storyboard>
+
+            <Style TargetType="Border" x:Key="newTaskButton">
+                <Setter Property="Background" Value="#393e46"/>
+                <Setter Property="CornerRadius" Value="25"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="CornerRadius" Value="15"/>
+                    </Trigger>
+                    <EventTrigger RoutedEvent="MouseEnter">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard Storyboard="{StaticResource NewTaskButtonHover}"/>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="MouseLeave">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard Storyboard="{StaticResource NewTaskButtonHoverReverse}"/>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="TextBlock" x:Key="higlightableText">
+                <Setter Property="Foreground" Value="White"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Border}, Path=IsMouseOver}" Value="True">
+                        <Setter Property="Foreground" Value="Black"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="Border" x:Key="SendButton">
+                <Setter Property="Background" Value="#1A73E8"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#297BE6"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <!--<Button x:Name="btn_test" Content="Connect" HorizontalAlignment="Left" Margin="328,172,0,0" VerticalAlignment="Top" Height="58" Width="72" Click="btn_test_click"/>-->
 
         <!-- MESSAGE HOLDER -->
 
-        <WrapPanel x:Name="MessageHolder" Background="#222831"/>
+        <ScrollViewer VerticalScrollBarVisibility="Hidden">
+            <WrapPanel x:Name="MessageHolder" Background="#222831"/>
+        </ScrollViewer>
 
+        <Border x:Name="NewTaskButton" MouseLeftButtonUp="NewTaskButtonClicked" Style="{StaticResource newTaskButton}" Width="50" Height="50" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20">
+            <TextBlock x:Name="NewTaskText" Style="{StaticResource higlightableText}" Text="+" FontFamily="{StaticResource Roboto Light}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="45"/>
+        </Border>
+
+        <Border Name="NewTaskBorder" Background="#404040" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" CornerRadius="0,0,25,0" Width="0" Height="0">
+            <DockPanel>
+                <Grid DockPanel.Dock="Top">
+                    <TextBlock Text="New Task" Margin="10,10,0,10" Foreground="#eeeeee" FontFamily="{StaticResource Roboto Medium}" FontSize="14"/>
+                    <TextBlock Text="✖" HorizontalAlignment="Right" Margin="0,10,15,10" FontSize="10" Foreground="Gray" Cursor="Hand" MouseLeftButtonUp="NewTaskButtonClicked"/>
+                </Grid>
+                
+                <Border CornerRadius="0,0,25,0" Padding="10" Background="White">
+                    <Grid>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="0,0,0,10">
+                                <DockPanel>
+                                    <TextBlock Text="Title" Foreground="Gray" FontSize="15" FontWeight="Normal" VerticalAlignment="Center"/>
+                                    <TextBox Name="TitleTextBox" VerticalAlignment="Center" FontSize="15" BorderThickness="0"/>
+                                </DockPanel>
+                            </Border>
+                            <TextBox TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" x:Name="ContentsTextBox" FontSize="15" Margin="0,15,0,0" Grid.Row="1" BorderThickness="0"/>
+                        </Grid>
+                        <Border Style="{StaticResource SendButton}" Cursor="Hand" CornerRadius="3" HorizontalAlignment="Left" VerticalAlignment="Bottom" MouseLeftButtonUp="onSendButtonClicked">
+                            <TextBlock FontFamily="{StaticResource Roboto Light}" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Text="Send" Foreground="#eeeeee" Padding="15,5,15,5"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </DockPanel>
+        </Border>
     </Grid>
 </Window>

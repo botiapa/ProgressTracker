@@ -6,33 +6,39 @@
              xmlns:local="clr-namespace:WPFProgressTracker.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
-    <Border CornerRadius="4" Margin="20" Background="#393e46" Width="325">
-        <StackPanel>
-            <Border CornerRadius="4,4,0,0" Background="#eeeeee" MinHeight="28">
-                <TextBlock Text="{Binding Title}" VerticalAlignment="Center" Margin="5,3,5,0" FontSize="18" FontFamily="{StaticResource Roboto Bold}" Foreground="Black"/>
-            </Border>
-            
-            <Grid Margin="8,10,8,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <Border Grid.Column="0" BorderBrush="#d65a31" BorderThickness="1" VerticalAlignment="Top" CornerRadius="50">
-                    <Ellipse VerticalAlignment="Top" Width="50" Height="50">
-                        <Ellipse.Fill>
-                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Avatar}"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
+    <Border CornerRadius="4" Margin="15" Background="#393e46" Width="325">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Border DockPanel.Dock="Top" CornerRadius="4,4,0,0" Background="#eeeeee" MinHeight="28">
+                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" Margin="5,3,5,0" FontSize="18" FontFamily="{StaticResource Roboto Bold}" Foreground="Black"/>
                 </Border>
 
-                <TextBlock Grid.Column="1" TextWrapping="WrapWithOverflow" FontSize="15" Foreground="#eeeeee" VerticalAlignment="Center" FontFamily="{StaticResource Roboto Light}" Margin="10,0,0,10" Text="{Binding Description}"/>
-            </Grid>
+                <Grid DockPanel.Dock="Right" Margin="8,10,8,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" BorderBrush="#d65a31" BorderThickness="1" VerticalAlignment="Top" CornerRadius="50">
+                        <Ellipse VerticalAlignment="Top" Width="50" Height="50">
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Avatar}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Border>
+
+                    <TextBlock Grid.Column="1" TextWrapping="WrapWithOverflow" FontSize="15" Foreground="#eeeeee" VerticalAlignment="Center" FontFamily="{StaticResource Roboto Light}" Margin="10,0,0,10" Text="{Binding Description}"/>
+                </Grid>
+            </StackPanel>
 
             <!-- PROGRESS BAR -->
-            <local:RoundedProgressBar Margin="0,5,0,0" Progress="{Binding Progress}" CornerRadius="0,0,4,4"/>
+            <local:RoundedProgressBar VerticalAlignment="Bottom" Grid.Row="1" Margin="0,5,0,0" Progress="{Binding Progress}" CornerRadius="0,0,4,4"/>
 
-        </StackPanel>
+        </Grid>
         
     </Border>
     
