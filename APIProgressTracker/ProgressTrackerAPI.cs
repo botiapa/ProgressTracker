@@ -92,10 +92,13 @@ namespace APIProgressTracker
         #region Actual API calls
         public static void SendNewMessage(Message message)
         {
-            var json = JsonConvert.SerializeObject(message);
+            //Create json
+            var json = message.toJson();
+            //Make command
             var comm = sqlConnection.CreateCommand();
             comm.CommandText = ("INSERT INTO progresstracker(`progress`) VALUES(?json)");
             comm.Parameters.AddWithValue("?json", json);
+            //Execute command
             comm.ExecuteNonQuery();
         }
 
