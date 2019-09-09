@@ -28,9 +28,6 @@ namespace APIProgressTracker
             builder.Port = PORT;
             builder.SslMode = MySqlSslMode.None;
 
-            
-            
-
             string connString = builder.ToString();
 
             builder = null;
@@ -90,25 +87,40 @@ namespace APIProgressTracker
         #endregion
 
         #region Actual API calls
-        public static void SendNewMessage(Message message)
+        public static IEnumerable<KeyValuePair<int, Message>> GetMessages()
+        {
+            MySqlQuery msgs = SQLQuery("SELECT * FROM progresstracker");
+
+            foreach (List<object> row in msgs.objects)
+            {
+                Message msg = JsonConvert.DeserializeObject<Message>(row[1].ToString());
+                yield return new KeyValuePair<int, Message>(Convert.ToInt32(row[0]), msg);
+            }
+        }
+
+        /// <summary>
+        /// Adds a new message to the database
+        /// </summary>
+        /// <returns>True on success</returns>
+        public static bool SendNewMessage(Message message)
         {
             var json = JsonConvert.SerializeObject(message);
             var comm = sqlConnection.CreateCommand();
             comm.CommandText = ("INSERT INTO progresstracker(`progress`) VALUES(?json)");
             comm.Parameters.AddWithValue("?json", json);
-            comm.ExecuteNonQuery();
+            return comm.ExecuteNonQuery() > 0 ? true : false; // Return true if more than one row was affected. (It actually added the new row)
         }
 
-        public static IEnumerable<Message> GetMessages()
+        /// <summary>
+        /// Deletes a message from the database
+        /// </summary>
+        /// <returns>True on success</returns>
+        public static bool DeleteMessage(int id)
         {
-            MySqlQuery msgs = SQLQuery("SELECT * FROM progresstracker");
-
-            foreach (List<object> card in msgs.objects)
-            {
-                Message msg = JsonConvert.DeserializeObject<Message>(card[1].ToString());
-                yield return msg;
-            }
-
+            var comm = sqlConnection.CreateCommand();
+            comm.CommandText = ("DELETE FROM `progresstracker` WHERE `id` = ?ID");
+            comm.Parameters.AddWithValue("?ID", id);
+            return comm.ExecuteNonQuery() > 0 ? true : false; // Return true if more than one row was affected. (It actually deleted the row)
         }
         #endregion
     }

@@ -16,13 +16,16 @@ namespace WPFProgressTracker.Controls
         public BitmapImage Avatar { get; set; }
         public double Progress { get; set; }
 
+        public int ID;
+        public Message Data;
+
         public MessageControl()
         {
             InitializeComponent();
             DataContext = this;
         }
 
-        public MessageControl(Message message)
+        public MessageControl(int ID, Message message)
         {
             InitializeComponent();
             DataContext = this;
@@ -31,6 +34,17 @@ namespace WPFProgressTracker.Controls
             Description = message.TextContents;
             Avatar = ImageHelper.Base64StringToBitmap(message.Author.ImageUrl);
             Progress = message.ProgressPercent;
+
+            this.ID = ID;
+            Data = message;
+        }
+
+        private void onDeleteButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if(ProgressTrackerAPI.DeleteMessage(ID))
+            {
+                this.Visibility = System.Windows.Visibility.Collapsed; //FIXME
+            }
         }
     }
 }

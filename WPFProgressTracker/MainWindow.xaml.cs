@@ -1,6 +1,5 @@
 ﻿using APIProgressTracker;
 using APIProgressTracker.JSONObjects;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media.Animation;
@@ -15,6 +14,11 @@ namespace WPFProgressTracker
     {
         Storyboard NewTaskStoryboard;
         Storyboard NewTaskStoryboardReverse;
+
+        /// <summary>
+        /// The key is the ID of the message, and the value is the contents
+        /// </summary>
+        Dictionary<int, MessageControl> messageControls = new Dictionary<int, MessageControl>();
 
         public MainWindow()
         {
@@ -32,10 +36,16 @@ namespace WPFProgressTracker
         public void UpdateUI()
         {
             MessageHolder.Children.Clear();
+            messageControls.Clear();
             var messages = ProgressTrackerAPI.GetMessages();
 
-            foreach (var msg in messages)
-                MessageHolder.Children.Add(new MessageControl(msg));
+            foreach (var rows in messages)
+            {
+                var mc = new MessageControl(rows.Key, rows.Value);
+                MessageHolder.Children.Add(mc);
+                messageControls.Add(rows.Key, mc);
+            }
+                
         }
 
         private void NewTaskButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
