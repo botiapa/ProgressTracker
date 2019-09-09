@@ -56,6 +56,12 @@ namespace WPFProgressTracker.Controls
             set { SetValue(CornerRadiusProperty, value); }
         }
 
+        public bool Editable
+        {
+            get { return (bool)GetValue(EditableProperty); }
+            set { SetValue(EditableProperty, value); }
+        }
+
         static RoundedProgressBar()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(RoundedProgressBar), new FrameworkPropertyMetadata(typeof(RoundedProgressBar)));
@@ -66,7 +72,28 @@ namespace WPFProgressTracker.Controls
         public static readonly DependencyProperty MaxProgressProperty = DependencyProperty.Register("MaxProgress", typeof(double), typeof(RoundedProgressBar), new PropertyMetadata(100d, ProgressPropertyChanged));
         public static readonly DependencyProperty ProgressProperty = DependencyProperty.Register("Progress", typeof(double), typeof(RoundedProgressBar), new PropertyMetadata(0d, ProgressPropertyChanged));
         public static readonly DependencyProperty CornerRadiusProperty = DependencyProperty.Register("CornerRadius", typeof(CornerRadius), typeof(RoundedProgressBar), new PropertyMetadata(new CornerRadius(), ProgressPropertyChanged));
+        public static readonly DependencyProperty EditableProperty = DependencyProperty.Register("EditableProperty", typeof(bool), typeof(RoundedProgressBar), new PropertyMetadata(false, EditablePropertyChanged));
 
+        static void EditablePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            var editable = (bool)e.NewValue;
+            var progressBar = (RoundedProgressBar)obj;
+            if (editable)
+                progressBar.MouseMove += onMouseMove;
+            else
+                progressBar.MouseMove -= onMouseMove;
+        }
+
+        private static void onMouseMove(object sender, MouseEventArgs e)
+        {
+            if(e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
+            {
+                var progressBar = (RoundedProgressBar)sender;
+                var progressPercent = e.GetPosition(progressBar).X / progressBar.ActualWidth; // Calculated progress in percentage
+                var difference = Math.Abs(progressBar.MinProgress - progressBar.MaxProgress); // Max difference
+                progressBar.Progress = progressBar.MinProgress + (difference * progressPercent);
+            }
+        }
 
         /// <summary>
         /// If any properties that are required to calculate the width is changed then this is called.

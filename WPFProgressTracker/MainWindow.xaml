@@ -69,8 +69,6 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <!--<Button x:Name="btn_test" Content="Connect" HorizontalAlignment="Left" Margin="328,172,0,0" VerticalAlignment="Top" Height="58" Width="72" Click="btn_test_click"/>-->
-
         <!-- MESSAGE HOLDER -->
 
         <ScrollViewer VerticalScrollBarVisibility="Hidden">
