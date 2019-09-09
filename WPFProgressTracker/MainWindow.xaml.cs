@@ -1,8 +1,11 @@
 ﻿using APIProgressTracker;
 using APIProgressTracker.JSONObjects;
+using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using WPFProgressTracker.Controls;
 
 namespace WPFProgressTracker
@@ -25,6 +28,14 @@ namespace WPFProgressTracker
             InitializeComponent();
             NewTaskStoryboard = (Storyboard)Resources["NewTaskStoryboard"];
             NewTaskStoryboardReverse = (Storyboard)Resources["NewTaskStoryboardReverse"];
+
+            // Start the auto refresher
+            var updateTimer = new DispatcherTimer();
+            updateTimer.Interval = TimeSpan.FromSeconds(3);
+            updateTimer.Tick += (x,y) => {
+                UpdateUI();
+            };
+            updateTimer.Start();
         }
 
         private void MainWindowLoaded(object sender, RoutedEventArgs e)
@@ -35,10 +46,10 @@ namespace WPFProgressTracker
 
         public void UpdateUI()
         {
-            MessageHolder.Children.Clear();
-            messageControls.Clear();
             var messages = ProgressTrackerAPI.GetMessages();
 
+            MessageHolder.Children.Clear();
+            messageControls.Clear();
             foreach (var rows in messages)
             {
                 var mc = new MessageControl(rows.Key, rows.Value);
