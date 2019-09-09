@@ -6,7 +6,38 @@
              xmlns:local="clr-namespace:WPFProgressTracker.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="400">
-    <Border CornerRadius="4" Margin="15" Background="#393e46" Width="325">
+
+    <UserControl.Resources>
+        <Style x:Key="MessageControlBorder" TargetType="Border">
+            <Style.Triggers>
+                
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    
+    <Border Style="{StaticResource MessageControlBorder}" x:Name="MessageControlBorder" CornerRadius="4" Margin="15" Background="#393e46" Width="325">
+        <Border.RenderTransform>
+            <ScaleTransform x:Name="ScaleTransform"/>
+        </Border.RenderTransform>
+        <Border.Triggers>
+            <!-- FIXME: Animations gets called again even if the mouse stays over the element-->
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" From="1" To="1.05" Duration="0:0:0.20"/>
+                        <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1" To="1.05" Duration="0:0:0.20"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" From="1.05" To="1" Duration="0:0:0.15" AutoReverse="False"/>
+                        <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1.05" To="1" Duration="0:0:0.15" AutoReverse="False"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Border.Triggers>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>

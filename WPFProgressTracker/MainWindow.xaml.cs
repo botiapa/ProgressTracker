@@ -46,7 +46,7 @@ namespace WPFProgressTracker
 
         public void UpdateUI()
         {
-            var messages = ProgressTrackerAPI.GetMessages();
+            var messages = ProgressTrackerAPI.GetMessages(); //TODO: Determine if the messages actually changed and refresh only then
 
             MessageHolder.Children.Clear();
             messageControls.Clear();

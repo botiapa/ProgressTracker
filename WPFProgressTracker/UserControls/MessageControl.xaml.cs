@@ -3,6 +3,9 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using APIProgressTracker;
 using WPFProgressTracker.Misc;
+using System.Windows.Media.Animation;
+using System;
+using System.Windows;
 
 namespace WPFProgressTracker.Controls
 {
@@ -18,6 +21,8 @@ namespace WPFProgressTracker.Controls
 
         public int ID;
         public Message Data;
+
+        Storyboard hoverStoryboard;
 
         public MessageControl()
         {
