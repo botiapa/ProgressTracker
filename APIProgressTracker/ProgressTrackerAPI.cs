@@ -88,16 +88,16 @@ namespace APIProgressTracker
         #endregion
 
         #region Actual API calls
-        public static List<KeyValuePair<int, Message>> GetMessages(string latestTimestamp = null)
+        public static List<KeyValuePair<int, Message>> GetMessages(DateTime latestTimestamp)
         {
-            latestTimestamp = latestTimestamp ?? DateTime.MinValue.ToString("yyyy-MM-dd HH:mm:ss");
-            MySqlQuery msgs = SQLQuery(String.Format("SELECT * FROM progresstracker WHERE `last_modified` > '{0}' ORDER BY `last_modified` DESC", latestTimestamp));
+            var latestTimestampString = latestTimestamp.ToString("yyyy-MM-dd HH:mm:ss");
+            MySqlQuery msgs = SQLQuery(String.Format("SELECT * FROM progresstracker WHERE `last_modified` > '{0}' ORDER BY `last_modified` DESC", latestTimestampString));
 
             var messageList = new List<KeyValuePair<int, Message>>();
             foreach (List<object> row in msgs.objects)
             {
                 Message msg = JsonConvert.DeserializeObject<Message>(row[1].ToString());
-                msg.LastEdited = row[2].ToString();
+                msg.LastEdited = DateTime.Parse(row[2].ToString());
                 messageList.Add(new KeyValuePair<int, Message>(Convert.ToInt32(row[0]), msg));
             }
             return messageList;

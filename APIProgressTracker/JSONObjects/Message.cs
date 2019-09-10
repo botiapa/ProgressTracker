@@ -15,7 +15,8 @@ namespace APIProgressTracker.JSONObjects
         public short ProgressPercent;
         public Author Author;
 
-        public string LastEdited;
+        [JsonIgnore]
+        public DateTime LastEdited;
 
         [JsonConstructor]
         public Message(string uid, string title, string textcontent, string image, short progresspercent, Author author)
