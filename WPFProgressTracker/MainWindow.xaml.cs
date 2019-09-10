@@ -40,7 +40,15 @@ namespace WPFProgressTracker
 
         private void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
-            ProgressTrackerAPI.Init();
+            object success = ProgressTrackerAPI.Init();
+            if (success is bool && (bool)success == true)
+                Console.WriteLine("Init successs");
+            else
+            {
+                MessageBox.Show(success.ToString());
+                Close();
+            }
+
             UpdateUI();
         }
 

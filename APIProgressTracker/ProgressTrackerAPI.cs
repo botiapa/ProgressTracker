@@ -17,7 +17,7 @@ namespace APIProgressTracker
         private const uint PORT = 3306;
         public static MySqlConnection sqlConnection;
 
-        public static void Init()
+        public static object Init()
         {
             //TODO: Connect
             MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder();
@@ -37,11 +37,12 @@ namespace APIProgressTracker
                 sqlConnection = new MySqlConnection(connString);
                 sqlConnection.Open();
                 Console.WriteLine("Connected and opened connection");
-
+                return true;
             }
             catch(MySqlException e)
             {
                 Console.WriteLine(e);
+                return e;
             }
         }
         #endregion
