@@ -17,7 +17,7 @@ namespace APIProgressTracker
         private const uint PORT = 3306;
         public static MySqlConnection sqlConnection;
 
-        public static void Init()
+        public static object Init()
         {
             //TODO: Connect
             MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder();
@@ -37,11 +37,12 @@ namespace APIProgressTracker
                 sqlConnection = new MySqlConnection(connString);
                 sqlConnection.Open();
                 Console.WriteLine("Connected and opened connection");
-
+                return true;
             }
             catch(MySqlException e)
             {
                 Console.WriteLine(e);
+                return e;
             }
         }
         #endregion
@@ -110,8 +111,9 @@ namespace APIProgressTracker
         {
             var json = JsonConvert.SerializeObject(message);
             var comm = sqlConnection.CreateCommand();
-            comm.CommandText = ("INSERT INTO progresstracker(`progress`) VALUES(?json)");
+            comm.CommandText = ("INSERT INTO progresstracker(`progress`, `last_modified`) VALUES(?json, ?lastmodified)");
             comm.Parameters.AddWithValue("?json", json);
+            comm.Parameters.AddWithValue("?lastmodified", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             return comm.ExecuteNonQuery() > 0 ? true : false; // Return true if more than one row was affected. (It actually added the new row)
         }
 
