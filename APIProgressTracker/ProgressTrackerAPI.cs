@@ -87,15 +87,19 @@ namespace APIProgressTracker
         #endregion
 
         #region Actual API calls
-        public static IEnumerable<KeyValuePair<int, Message>> GetMessages()
+        public static List<KeyValuePair<int, Message>> GetMessages(string latestTimestamp = null)
         {
-            MySqlQuery msgs = SQLQuery("SELECT * FROM progresstracker");
+            latestTimestamp = latestTimestamp ?? DateTime.MinValue.ToString("yyyy-MM-dd HH:mm:ss");
+            MySqlQuery msgs = SQLQuery(String.Format("SELECT * FROM progresstracker WHERE `last_modified` > '{0}' ORDER BY `last_modified` DESC", latestTimestamp));
 
+            var messageList = new List<KeyValuePair<int, Message>>();
             foreach (List<object> row in msgs.objects)
             {
                 Message msg = JsonConvert.DeserializeObject<Message>(row[1].ToString());
-                yield return new KeyValuePair<int, Message>(Convert.ToInt32(row[0]), msg);
+                msg.LastEdited = row[2].ToString();
+                messageList.Add(new KeyValuePair<int, Message>(Convert.ToInt32(row[0]), msg));
             }
+            return messageList;
         }
 
         /// <summary>

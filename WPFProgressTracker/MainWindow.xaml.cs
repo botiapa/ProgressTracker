@@ -18,6 +18,8 @@ namespace WPFProgressTracker
         Storyboard NewTaskStoryboard;
         Storyboard NewTaskStoryboardReverse;
 
+        string newestTimestamp = null;
+
         /// <summary>
         /// The key is the ID of the message, and the value is the contents
         /// </summary>
@@ -46,15 +48,19 @@ namespace WPFProgressTracker
 
         public void UpdateUI()
         {
-            var messages = ProgressTrackerAPI.GetMessages(); //TODO: Determine if the messages actually changed and refresh only then
+            var messages = ProgressTrackerAPI.GetMessages(newestTimestamp);
 
-            MessageHolder.Children.Clear();
-            messageControls.Clear();
-            foreach (var rows in messages)
+            if(messages.Count > 0)
             {
-                var mc = new MessageControl(rows.Key, rows.Value);
-                MessageHolder.Children.Add(mc);
-                messageControls.Add(rows.Key, mc);
+                MessageHolder.Children.Clear();
+                messageControls.Clear();
+                foreach (var rows in messages)
+                {
+                    var mc = new MessageControl(rows.Key, rows.Value);
+                    MessageHolder.Children.Add(mc);
+                    messageControls.Add(rows.Key, mc);
+                }
+                newestTimestamp = messages[0].Value.LastEdited; // The first one is the 'newest' one because the query was ordered by last_edit
             }
                 
         }
