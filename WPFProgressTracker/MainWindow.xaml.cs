@@ -89,5 +89,14 @@ namespace WPFProgressTracker
             TitleTextBox.Text = string.Empty;
             ContentsTextBox.Text = string.Empty;
         }
+
+        private void onOverlayClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (!OverlayContents.IsMouseOver)
+            {
+                OverlayContents.Children.Clear();
+                Overlay.Visibility = Visibility.Collapsed;
+            }
+        }
     }
 }

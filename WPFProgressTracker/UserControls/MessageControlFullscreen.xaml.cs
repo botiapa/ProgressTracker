@@ -1,20 +1,26 @@
-﻿using APIProgressTracker.JSONObjects;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using APIProgressTracker;
-using WPFProgressTracker.Misc;
-using System.Windows.Media.Animation;
+﻿using APIProgressTracker;
+using APIProgressTracker.JSONObjects;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
-using WPFProgressTracker.UserControls;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using WPFProgressTracker.Misc;
 
-namespace WPFProgressTracker.Controls
+namespace WPFProgressTracker.UserControls
 {
     /// <summary>
-    /// Interaction logic for MessageControl.xaml
+    /// Interaction logic for MessageControlFullscreenxaml.xaml
     /// </summary>
-    public partial class MessageControl : UserControl
+    public partial class MessageControlFullscreen : UserControl
     {
         public string Title { get; set; }
         public string Description { get; set; }
@@ -26,13 +32,13 @@ namespace WPFProgressTracker.Controls
 
         Storyboard hoverStoryboard;
 
-        public MessageControl()
+        public MessageControlFullscreen()
         {
             InitializeComponent();
             DataContext = this;
         }
 
-        public MessageControl(int ID, Message message)
+        public MessageControlFullscreen(int ID, Message message)
         {
             InitializeComponent();
             DataContext = this;
@@ -48,18 +54,10 @@ namespace WPFProgressTracker.Controls
 
         private void onDeleteButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(ProgressTrackerAPI.DeleteMessage(ID))
+            if (ProgressTrackerAPI.DeleteMessage(ID))
             {
                 this.Visibility = System.Windows.Visibility.Collapsed; //FIXME
             }
-        }
-
-        private void onMessageControlClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            var mainWindow = (MainWindow)Application.Current.MainWindow;
-            var mcFullscreen = new MessageControlFullscreen(ID, Data);
-            mainWindow.OverlayContents.Children.Add(mcFullscreen);
-            mainWindow.Overlay.Visibility = Visibility.Visible;
         }
     }
 }

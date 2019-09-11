@@ -15,25 +15,28 @@
         </Style>
     </UserControl.Resources>
     
-    <Border Style="{StaticResource MessageControlBorder}" x:Name="MessageControlBorder" CornerRadius="4" Margin="15" Background="#393e46" Width="325">
+    <Border Style="{StaticResource MessageControlBorder}" x:Name="MessageControlBorder" CornerRadius="4" Margin="15" Background="#393e46" Width="325" MouseLeftButtonUp="onMessageControlClicked">
+        <Border.RenderTransformOrigin>
+            <Point X="0.5" Y="0.5"/>
+        </Border.RenderTransformOrigin>
         <Border.RenderTransform>
-            <ScaleTransform x:Name="ScaleTransform"/>
+            <ScaleTransform x:Name="MCScaleTransform"/>
         </Border.RenderTransform>
         <Border.Triggers>
             <!-- FIXME: Animations gets called again even if the mouse stays over the element-->
             <EventTrigger RoutedEvent="MouseEnter">
                 <BeginStoryboard>
                     <Storyboard>
-                        <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" From="1" To="1.05" Duration="0:0:0.20"/>
-                        <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1" To="1.05" Duration="0:0:0.20"/>
+                        <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" From="1" To="1.025" Duration="0:0:0.15"/>
+                        <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1" To="1.025" Duration="0:0:0.15"/>
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
             <EventTrigger RoutedEvent="MouseLeave">
                 <BeginStoryboard>
                     <Storyboard>
-                        <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" From="1.05" To="1" Duration="0:0:0.15" AutoReverse="False"/>
-                        <DoubleAnimation Storyboard.TargetName="ScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1.05" To="1" Duration="0:0:0.15" AutoReverse="False"/>
+                        <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" From="1.025" To="1" Duration="0:0:0.10" AutoReverse="False"/>
+                        <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1.025" To="1" Duration="0:0:0.10" AutoReverse="False"/>
                     </Storyboard>
                 </BeginStoryboard>
             </EventTrigger>
