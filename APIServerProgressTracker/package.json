@@ -1,0 +1,30 @@
+{
+  "name": "progresstracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/botiapa/ProgressTracker.git"
+  },
+  "author": "botiapa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/botiapa/ProgressTracker/issues"
+  },
+  "homepage": "https://github.com/botiapa/ProgressTracker#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "mysql": "^2.17.1",
+    "nodejs-websocket": "^1.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
+  }
+}
