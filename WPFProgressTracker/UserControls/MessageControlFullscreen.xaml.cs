@@ -38,26 +38,27 @@ namespace WPFProgressTracker.UserControls
             DataContext = this;
         }
 
-        public MessageControlFullscreen(int ID, Message message)
+        public MessageControlFullscreen(Message message)
         {
             InitializeComponent();
             DataContext = this;
 
             Title = message.Title;
-            Description = message.TextContents;
-            Avatar = ImageHelper.Base64StringToBitmap(message.Author.ImageUrl);
-            Progress = message.ProgressPercent;
+            Description = message.Contents;
+            if (!String.IsNullOrWhiteSpace(message.Author.ImageUrl))
+                Avatar.UriSource = new Uri(message.Author.ImageUrl); // Set the image source if it's not empty or null
+            Progress = message.Progress;
 
             this.ID = ID;
             Data = message;
         }
 
         private void onDeleteButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
+        {/*
             if (ProgressTrackerAPI.DeleteMessage(ID))
             {
                 this.Visibility = System.Windows.Visibility.Collapsed; //FIXME
-            }
+            }*/
         }
     }
 }

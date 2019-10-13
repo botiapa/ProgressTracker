@@ -6,13 +6,9 @@ namespace APIProgressTracker.JSONObjects
 {
     public class Author
     {
-        public string Name;
-        public string ImageUrl;
 
-        public Author(string name, string image)
-        {
-            Name = name;
-            ImageUrl = image;
-        }
+        public string ID { get; set; }
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

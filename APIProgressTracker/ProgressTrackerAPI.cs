@@ -4,129 +4,81 @@ using System.IO;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using APIProgressTracker.JSONObjects;
+using System.Security;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace APIProgressTracker
 {
     public static class ProgressTrackerAPI
     {
-        #region Init process
-        private const string SERVER = "remotemysql.com";
-        private const string DATABASE = "TMrArME2SE";
-        private const string UID = "TMrArME2SE";
-        private const string PASSWORD = "kJTKB2snGQ";
-        private const uint PORT = 3306;
-        public static MySqlConnection sqlConnection;
+        static string server = "http://localhost:8000";
+        const uint PORT = 8000;
 
-        public static object Init()
+        // URLS
+        const string URL_GETMESSAGES = "/message";
+        const string URL_CREATEMESSAGE = "/message/create";
+        const string URL_UPDATEMESSAGE = "/message/update";
+        const string URL_DELETEMESSAGE = "/message/delete";
+        const string URL_ACCOUNTLOGIN = "/account/login";
+        const string URL_ACCOUNTREGISTER = "/account/register";
+        const string URL_ACCOUNTINFO = "/account/info";
+        const string URL_ACCOUNTIMAGE= "/account/uploadimage";
+
+        static readonly HttpClient client = new HttpClient();
+
+        public static string hash;
+
+        #region API Calls
+        /// <returns>
+        /// HASH or null if error
+        /// </returns>
+        public async static Task<string> LoginAsync(string username, string password)
         {
-            //TODO: Connect
-            MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder();
-            builder.Server = SERVER;
-            builder.UserID = UID;
-            builder.Password = PASSWORD;
-            builder.Database = DATABASE;
-            builder.Port = PORT;
-            builder.SslMode = MySqlSslMode.None;
-
-            string connString = builder.ToString();
-
-            builder = null;
-
-            try
-            {
-                sqlConnection = new MySqlConnection(connString);
-                sqlConnection.Open();
-                Console.WriteLine("Connected and opened connection");
-                return true;
-            }
-            catch(MySqlException e)
-            {
-                Console.WriteLine(e);
-                return e;
-            }
-        }
-        #endregion
-
-        #region MySql thingies
-        public static MySqlQuery SQLQuery(string query)
-        {
-            MySqlCommand mySqlCommand = new MySqlCommand(query, sqlConnection);
-            var reader = mySqlCommand.ExecuteReader();
-
-            List<List<object>> readObjs;
-            readObjs = new List<List<object>>();
-
-            bool success = false;
-
-            while (reader.Read())
-            {
-                List<object> insertList = new List<object>();
-
-                for (int i = 0; i < reader.FieldCount; i++)
-                {
-                    insertList.Add(reader.GetValue(i));
-                }
-
-                readObjs.Add(insertList);
-                insertList = null;
-
-            }
-            success = reader.HasRows;
-
-            reader.Close();
-
-            return new MySqlQuery(readObjs, success);
+            var parameters = new Dictionary<string, string>() { { "username", username }, { "password", password } };
+            var content = new FormUrlEncodedContent(parameters);
+            var result = await client.PostAsync(server + URL_ACCOUNTLOGIN, content);
+            if (result.IsSuccessStatusCode)
+                return await result.Content.ReadAsStringAsync();
+            return null;
         }
 
-        public static bool SQLExecute(string query)
+        
+        public async static Task<List<Message>> GetMessages(DateTime latestTimestamp)
         {
-            MySqlCommand executeCmd = new MySqlCommand(query, sqlConnection);
-            var executer = executeCmd.ExecuteNonQuery();
-
-            return true;
-        }
-        #endregion
-
-        #region Actual API calls
-        public static List<KeyValuePair<int, Message>> GetMessages(DateTime latestTimestamp)
-        {
-            var latestTimestampString = latestTimestamp.ToString("yyyy-MM-dd HH:mm:ss");
-            MySqlQuery msgs = SQLQuery(String.Format("SELECT * FROM progresstracker WHERE `last_modified` > '{0}' ORDER BY `last_modified` DESC", latestTimestampString));
-
-            var messageList = new List<KeyValuePair<int, Message>>();
-            foreach (List<object> row in msgs.objects)
-            {
-                Message msg = JsonConvert.DeserializeObject<Message>(row[1].ToString());
-                msg.LastEdited = DateTime.Parse(row[2].ToString());
-                messageList.Add(new KeyValuePair<int, Message>(Convert.ToInt32(row[0]), msg));
-            }
-            return messageList;
+            var result = await client.GetAsync(server + URL_GETMESSAGES);
+            if (result.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<List<Message>>(await result.Content.ReadAsStringAsync());
+            return null;
         }
 
+        
         /// <summary>
         /// Adds a new message to the database
         /// </summary>
         /// <returns>True on success</returns>
-        public static bool SendNewMessage(Message message)
+        public async static Task<bool> SendNewMessage(string title, string contents = null, ushort progress = 0)
         {
-            var json = JsonConvert.SerializeObject(message);
-            var comm = sqlConnection.CreateCommand();
-            comm.CommandText = ("INSERT INTO progresstracker(`progress`, `last_modified`) VALUES(?json, ?lastmodified)");
-            comm.Parameters.AddWithValue("?json", json);
-            comm.Parameters.AddWithValue("?lastmodified", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-            return comm.ExecuteNonQuery() > 0 ? true : false; // Return true if more than one row was affected. (It actually added the new row)
+            var parameters = new Dictionary<string, string>() {{ "hash", hash }, {"Title", title } };
+            if (contents != null)
+                parameters.Add("Contents", contents);
+            if (progress != 0)
+                parameters.Add("Progress", progress.ToString());
+            var content = new FormUrlEncodedContent(parameters);
+            var result = await client.PostAsync(server + URL_CREATEMESSAGE, content);
+            return result.IsSuccessStatusCode;
         }
 
         /// <summary>
         /// Deletes a message from the database
         /// </summary>
         /// <returns>True on success</returns>
-        public static bool DeleteMessage(int id)
+        public async static Task<bool> DeleteMessage(string id)
         {
-            var comm = sqlConnection.CreateCommand();
-            comm.CommandText = ("DELETE FROM `progresstracker` WHERE `id` = ?ID");
-            comm.Parameters.AddWithValue("?ID", id);
-            return comm.ExecuteNonQuery() > 0 ? true : false; // Return true if more than one row was affected. (It actually deleted the row)
+            var parameters = new Dictionary<string, string>() { { "hash", hash }, { "ID", id } };
+            var content = new FormUrlEncodedContent(parameters);
+            var result = await client.PostAsync(server + URL_DELETEMESSAGE, content);
+            return result.IsSuccessStatusCode;
         }
         #endregion
     }

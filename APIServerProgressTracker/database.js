@@ -5,7 +5,7 @@ module.exports = function() {
     path = require('path'),    
     filePath = path.join(__dirname, 'auth.key');
 
-    split = fs.readFileSync(filePath, {encoding: "utf8"}).split("\n");
+    split = fs.readFileSync(filePath, {encoding: "utf8"}).split(";");
     const SERVER = split[0];
     const DATABASE = split[1];
     const UID = split[2];

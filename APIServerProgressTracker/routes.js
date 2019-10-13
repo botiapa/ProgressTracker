@@ -5,18 +5,24 @@ const fs = require('fs');
 
 module.exports = function(app, ws, db) {
     app.get("/message", (req, res) => {
-        db.query('SELECT * from messages', function (error, results, fields) {
-            if (error) throw error;
-            let result = [];
-            results.forEach((msg, index) => {
-                result.push({
-                    "ID": msg.ID,
-                    "Title": msg.Title,
-                    "Contents": msg.Contents,
-                    "Progress": msg.Progress,
-                    "Author": msg.Author});
-            });
-            res.json(result);
+        db.query('SELECT * from messages', function (error, msgResults, fields) {
+            if(error == null) 
+			{
+				gatherAllMessagesWithAuthor(db, msgResults, [], function(error, results) 
+				{
+					if(error == null) 
+					{
+						res.json(results);
+					}
+					else
+						res.sendStatus(500);
+				})
+				
+			}
+			else {
+				console.log(error);
+				res.sendStatus(500);
+			}
         });
     });
     app.post("/message/create", function(req, res) {
@@ -28,7 +34,11 @@ module.exports = function(app, ws, db) {
                 if(error == null) {
                     res.sendStatus(200);
                     db.query("SELECT * FROM messages WHERE ID = ?", [ID], function(error, results, fields) { // Update the new message on all connected clients
-                        ws.messageUpdate({ID : ID, Title : results[0].Title, Contents : results[0].Contents, Progress : results[0].Progress, Author : results[0].Author, LastModified : results[0].Last_Modified}, "CREATE");
+                        db.query("SELECT ID,Name,ImageUrl FROM authors WHERE ID = ?", [results[0].Author], function(error, authors, fields) 
+						{
+							let authorObject = {ID : authors[0].ID, Name : authors[0].Name, ImageUrl : authors[0].ImageUrl};
+							ws.messageUpdate({ID : ID, Title : results[0].Title, Contents : results[0].Contents, Progress : results[0].Progress, Author : authorObject, LastModified : results[0].Last_Modified}, "CREATE");
+						})
                     })
                 }
                 else {
@@ -59,7 +69,12 @@ module.exports = function(app, ws, db) {
                             return;
                         }
                     })
-                    ws.messageUpdate({ID : results[0].ID, Title : results[0].Title, Contents : results[0].Contents, Progress : results[0].Progress, Author : results[0].Author, LastModified : results[0].Last_Modified}, "UPDATE");
+					db.query("SELECT ID,Name,ImageUrl FROM authors WHERE ID = ?", [results[0].Author], function(error, authors, fields) 
+					{
+						let authorObject = {ID : authors[0].ID, Name : authors[0].Name, ImageUrl : authors[0].ImageUrl};
+						ws.messageUpdate({ID : results[0].ID, Title : results[0].Title, Contents : results[0].Contents, Progress : results[0].Progress, Author : authorObject, LastModified : results[0].Last_Modified}, "UPDATE");
+					})
+                    
                 }
                 else if(error == null) {
                     res.sendStatus(404);
@@ -106,27 +121,34 @@ module.exports = function(app, ws, db) {
         }
         var loginHash = getRandomHash();
         db.query("SELECT * FROM authors WHERE Name = ?", [req.body.username], function(error, results, fields) {
-            if(results.length == 1) {
-                var hashedPassword = hashPasswordWithSalt(req.body.password, results[0].Salt);
-                db.query("SELECT * FROM authors WHERE Password = ? AND ID = ?", [hashedPassword[1], results[0].ID], function(error, result, fields) {
-                    if(results.length == 1) { // GOOD PASSWORD
-                        db.query("UPDATE authors SET hash = ? WHERE Password = ? AND ID = ?", [loginHash, hashedPassword[1], results[0].ID]);
-                        res.send(loginHash);
-                    }
-                    else { // BAD PASSWORD
-                        res.sendStatus(401);
-                    }
-                });
-            }
-            else if(results.length > 1) { // THERE IS MORE THAN ONE USER WITH THE SAME NAME
-                res.sendStatus(500);
-            }
-            else { // NAME NOT FOUND
-                res.sendStatus(401);
-            }
+            if(error == null) 
+			{
+				if(results.length == 1) {
+					var hashedPassword = hashPasswordWithSalt(req.body.password, results[0].Salt);
+					db.query("SELECT * FROM authors WHERE Password = ? AND ID = ?", [hashedPassword[1], results[0].ID], function(error, result, fields) {
+						if(results.length == 1) { // GOOD PASSWORD
+							db.query("UPDATE authors SET hash = ? WHERE Password = ? AND ID = ?", [loginHash, hashedPassword[1], results[0].ID]);
+							res.send(loginHash);
+						}
+						else { // BAD PASSWORD
+							res.sendStatus(401);
+						}
+					});
+				}
+				else if(results.length > 1) { // THERE IS MORE THAN ONE USER WITH THE SAME NAME
+					res.sendStatus(500);
+				}
+				else { // NAME NOT FOUND
+					res.sendStatus(401);
+				}
+			}
+			else 
+			{
+				console.log(error);
+				res.sendStatus(500);
+			}
         });
     });
-
     app.post("/account/register", function(req, res) {
         if(!req.body.username || !req.body.password)
         {
@@ -228,4 +250,31 @@ function randomValueBase64(byteSize) {
       .toString('base64') // convert to base64 format
       .replace(/\+/g, '0') // replace '+' with '0'
       .replace(/\//g, '0') // replace '/' with '0'
-  }
+}
+
+function gatherAllMessagesWithAuthor(db, messages, sofar, cb) 
+{
+	var msg = messages.shift();
+	
+	if(!msg)
+		cb(null, sofar);
+	else 
+	{
+		db.query('SELECT ID,Name,ImageUrl FROM authors WHERE ID = ?', [msg.Author], function(error, results, fields) 
+		{
+			if(error == null) 
+			{
+				let authorObject = {ID : results[0].ID, Name : results[0].Name, ImageUrl : results[0].ImageUrl};
+				sofar.push({
+						"ID": msg.ID,
+						"Title": msg.Title,
+						"Contents": msg.Contents,
+						"Progress": msg.Progress,
+						"Author": authorObject});
+				gatherAllMessagesWithAuthor(db, messages, sofar, cb);
+			}
+			else
+				cb(error);
+		})
+	}
+}

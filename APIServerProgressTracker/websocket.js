@@ -15,6 +15,10 @@ module.exports = {
             }
         });
 
+		this.ws.on("error", function(error) 
+		{
+			console.log(error);
+		});
         this.ws.listen(8001);
     },
     messageUpdate : function(message, type) {
@@ -22,10 +26,6 @@ module.exports = {
             elem.conn.sendText(JSON.stringify({type : type, message : message}));
         });
     }
-}
-
-function checkIfAuthenticated(conn) {
-
 }
 
 function checkIfLoggedIn(db, wsConn, hash, callback) {

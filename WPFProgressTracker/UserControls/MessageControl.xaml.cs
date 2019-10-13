@@ -21,7 +21,6 @@ namespace WPFProgressTracker.Controls
         public BitmapImage Avatar { get; set; }
         public double Progress { get; set; }
 
-        public int ID;
         public Message Data;
 
         Storyboard hoverStoryboard;
@@ -32,32 +31,32 @@ namespace WPFProgressTracker.Controls
             DataContext = this;
         }
 
-        public MessageControl(int ID, Message message)
+        public MessageControl(Message message)
         {
             InitializeComponent();
             DataContext = this;
 
             Title = message.Title;
-            Description = message.TextContents;
-            Avatar = ImageHelper.Base64StringToBitmap(message.Author.ImageUrl);
-            Progress = message.ProgressPercent;
+            Description = message.Contents;
+            if(!String.IsNullOrWhiteSpace(message.Author.ImageUrl)) 
+                Avatar.UriSource =  new Uri(message.Author.ImageUrl); // Set the image source if it's not empty or null
+            Progress = message.Progress;
 
-            this.ID = ID;
             Data = message;
         }
 
         private void onDeleteButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
+        {/*
             if(ProgressTrackerAPI.DeleteMessage(ID))
             {
                 this.Visibility = System.Windows.Visibility.Collapsed; //FIXME
-            }
+            }*/
         }
 
         private void onMessageControlClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
-            var mcFullscreen = new MessageControlFullscreen(ID, Data);
+            var mcFullscreen = new MessageControlFullscreen(Data);
             mainWindow.OverlayContents.Children.Add(mcFullscreen);
             mainWindow.Overlay.Visibility = Visibility.Visible;
         }

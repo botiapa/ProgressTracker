@@ -8,48 +8,11 @@ namespace APIProgressTracker.JSONObjects
 {
     public class Message
     {
-        public string UID;
-        public string Title;
-        public string TextContents;
-        public string Image;
-        public short ProgressPercent;
-        public Author Author;
-
-        [JsonIgnore]
-        public DateTime LastEdited;
-
-        [JsonConstructor]
-        public Message(string uid, string title, string textcontent, string image, short progresspercent, Author author)
-        {
-            UID = uid;
-            Title = title;
-            TextContents = textcontent;
-            Image = image;
-            ProgressPercent = progresspercent;
-            Author = author;
-        }
-
-        public Message(string uid, string title, string textcontent, short progresspercent, Author author)
-        {
-            UID = uid;
-            Title = title;
-            TextContents = textcontent;
-            ProgressPercent = progresspercent;
-            Author = author;
-        }
-
-        public Message(string title, string textcontent, short progresspercent, Author author)
-        {
-            UID = Guid.NewGuid().ToString();
-            Title = title;
-            TextContents = textcontent;
-            ProgressPercent = progresspercent;
-            Author = author;
-        }
-
-        public string toJson()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
+        public string ID { get; set; }
+        public string Title { get; set; }
+        public string Contents { get; set; }
+        public short Progress { get; set; }
+        public Author Author { get; set; }
+        public DateTime LastModified { get; set; }
     }
 }

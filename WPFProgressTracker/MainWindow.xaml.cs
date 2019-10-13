@@ -3,6 +3,7 @@ using APIProgressTracker.JSONObjects;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
@@ -15,6 +16,8 @@ namespace WPFProgressTracker
     /// </summary>
     public partial class MainWindow : Window
     {
+        const string WS_ADDRESS = "ws://localhost:8001";
+
         Storyboard NewTaskStoryboard;
         Storyboard NewTaskStoryboardReverse;
 
@@ -23,50 +26,40 @@ namespace WPFProgressTracker
         /// <summary>
         /// The key is the ID of the message, and the value is the contents
         /// </summary>
-        Dictionary<int, MessageControl> messageControls = new Dictionary<int, MessageControl>();
+        Dictionary<string, MessageControl> messageControls = new Dictionary<string, MessageControl>();
+        public GenericWebSocket ws;
 
         public MainWindow()
         {
             InitializeComponent();
             NewTaskStoryboard = (Storyboard)Resources["NewTaskStoryboard"];
             NewTaskStoryboardReverse = (Storyboard)Resources["NewTaskStoryboardReverse"];
-
-            // Start the auto refresher
-            var updateTimer = new DispatcherTimer();
-            updateTimer.Interval = TimeSpan.FromSeconds(3);
-            updateTimer.Tick += (x,y) => {
-                UpdateUI();
-            };
-            updateTimer.Start();
         }
 
-        private void MainWindowLoaded(object sender, RoutedEventArgs e)
+        private async void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
-            object success = ProgressTrackerAPI.Init();
-            if (success is bool && (bool)success == true)
-                Console.WriteLine("Init successs");
-            else
-            {
-                MessageBox.Show(success.ToString());
-                Close();
-            }
+            var hash = await ProgressTrackerAPI.LoginAsync("alma123", "alma123");
+            if (hash != null)
+                ProgressTrackerAPI.hash = hash;
 
-            UpdateUI();
+            ws = new GenericWebSocket(new Uri(WS_ADDRESS + "/" + hash));
+            await ws.Connect();
+            new WebSocketHandler(ws, this);
+
+            await ReloadUI();
         }
 
-        public void UpdateUI()
+        public async Task ReloadUI()
         {
-            var messages = ProgressTrackerAPI.GetMessages(newestTimestamp);
+            MessageHolder.Children.Clear();
+            messageControls.Clear();
+            var messages = await ProgressTrackerAPI.GetMessages(newestTimestamp);
 
-            if(messages.Count > 0)
+            foreach(var msg in messages)
             {
-                foreach (var rows in messages)
-                {
-                    var mc = new MessageControl(rows.Key, rows.Value);
-                    MessageHolder.Children.Add(mc);
-                    messageControls.Add(rows.Key, mc); // FIXME: New message should go first instead of last
-                }
-                newestTimestamp = messages[0].Value.LastEdited; // The first one is the 'newest' one because the query was ordered by last_edit
+                var mc = new MessageControl(msg);
+                MessageHolder.Children.Add(mc);
+                messageControls.Add(msg.ID, mc);
             }
                 
         }
@@ -79,12 +72,10 @@ namespace WPFProgressTracker
                 NewTaskStoryboard.Begin();
         }
 
-        private void onSendButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void onSendButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             NewTaskStoryboardReverse.Begin();
-            var msg = new Message(TitleTextBox.Text, ContentsTextBox.Text, 0, new Author("me", Properties.Resources.testpic));
-            ProgressTrackerAPI.SendNewMessage(msg);
-            UpdateUI();
+            await ProgressTrackerAPI.SendNewMessage(TitleTextBox.Text, ContentsTextBox.Text, 0);
 
             TitleTextBox.Text = string.Empty;
             ContentsTextBox.Text = string.Empty;
@@ -97,6 +88,12 @@ namespace WPFProgressTracker
                 OverlayContents.Children.Clear();
                 Overlay.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private async void MainWindowUnloaded(object sender, RoutedEventArgs e)
+        {
+            if (ws != null)
+                await ws.Close();
         }
     }
 }
