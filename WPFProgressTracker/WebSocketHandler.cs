@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
+using WPFProgressTracker.Controls;
 
 namespace WPFProgressTracker
 {
@@ -49,17 +51,29 @@ namespace WPFProgressTracker
 
         void newMessageReceived(Message msg)
         {
-
+            main.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                var msgControl = new MessageControl(msg);
+                main.MessageHolder.Children.Add(msgControl);
+                main.MessageControls.Add(msg.ID, msgControl);
+            }));
         }
 
         void updatedMessageReceived(Message msg)
         {
-
+            main.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                main.MessageControls[msg.ID].updateContents(msg);
+            }));
         }
 
         void deletedMessageReceived(DeletedMessage msg)
         {
-
+            main.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                main.MessageHolder.Children.Remove(main.MessageControls[msg.ID]);
+                main.MessageControls.Remove(msg.ID);
+            }));
         }
     }
 }

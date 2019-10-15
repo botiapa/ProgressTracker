@@ -27,7 +27,7 @@ namespace WPFProgressTracker.UserControls
         public BitmapImage Avatar { get; set; }
         public double Progress { get; set; }
 
-        public int ID;
+        public string ID;
         public Message Data;
 
         Storyboard hoverStoryboard;
@@ -49,16 +49,18 @@ namespace WPFProgressTracker.UserControls
                 Avatar.UriSource = new Uri(message.Author.ImageUrl); // Set the image source if it's not empty or null
             Progress = message.Progress;
 
-            this.ID = ID;
+            this.ID = message.ID;
             Data = message;
         }
 
-        private void onDeleteButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {/*
-            if (ProgressTrackerAPI.DeleteMessage(ID))
+        private async void onDeleteButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (await ProgressTrackerAPI.DeleteMessage(ID))
             {
-                this.Visibility = System.Windows.Visibility.Collapsed; //FIXME
-            }*/
+                this.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            else
+                Console.WriteLine("AN ERROR HAS OCCURED. Cannot Delete!");
         }
     }
 }

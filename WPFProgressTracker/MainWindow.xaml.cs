@@ -26,7 +26,7 @@ namespace WPFProgressTracker
         /// <summary>
         /// The key is the ID of the message, and the value is the contents
         /// </summary>
-        Dictionary<string, MessageControl> messageControls = new Dictionary<string, MessageControl>();
+        public Dictionary<string, MessageControl> MessageControls = new Dictionary<string, MessageControl>();
         public GenericWebSocket ws;
 
         public MainWindow()
@@ -52,14 +52,14 @@ namespace WPFProgressTracker
         public async Task ReloadUI()
         {
             MessageHolder.Children.Clear();
-            messageControls.Clear();
+            MessageControls.Clear();
             var messages = await ProgressTrackerAPI.GetMessages(newestTimestamp);
 
             foreach(var msg in messages)
             {
                 var mc = new MessageControl(msg);
                 MessageHolder.Children.Add(mc);
-                messageControls.Add(msg.ID, mc);
+                MessageControls.Add(msg.ID, mc);
             }
                 
         }

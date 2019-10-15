@@ -21,6 +21,8 @@ namespace WPFProgressTracker.Controls
         public BitmapImage Avatar { get; set; }
         public double Progress { get; set; }
 
+        public string ID;
+
         public Message Data;
 
         Storyboard hoverStoryboard;
@@ -36,29 +38,42 @@ namespace WPFProgressTracker.Controls
             InitializeComponent();
             DataContext = this;
 
+            setContents(message);
+        }
+
+        public void updateContents(Message message) => setContents(message);
+
+        private void setContents(Message message)
+        {
             Title = message.Title;
             Description = message.Contents;
-            if(!String.IsNullOrWhiteSpace(message.Author.ImageUrl)) 
-                Avatar.UriSource =  new Uri(message.Author.ImageUrl); // Set the image source if it's not empty or null
+            if (!String.IsNullOrWhiteSpace(message.Author.ImageUrl))
+                Avatar.UriSource = new Uri(message.Author.ImageUrl); // Set the image source if it's not empty or null
             Progress = message.Progress;
 
             Data = message;
+            ID = message.ID;
         }
 
-        private void onDeleteButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {/*
-            if(ProgressTrackerAPI.DeleteMessage(ID))
+        private async void onDeleteButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (await ProgressTrackerAPI.DeleteMessage(ID))
             {
-                this.Visibility = System.Windows.Visibility.Collapsed; //FIXME
-            }*/
+                this.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            else
+                Console.WriteLine("AN ERROR HAS OCCURED. Cannot Delete!");
         }
 
         private void onMessageControlClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var mainWindow = (MainWindow)Application.Current.MainWindow;
-            var mcFullscreen = new MessageControlFullscreen(Data);
-            mainWindow.OverlayContents.Children.Add(mcFullscreen);
-            mainWindow.Overlay.Visibility = Visibility.Visible;
+            if(!DeleteButton.IsMouseOver)
+            {
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+                var mcFullscreen = new MessageControlFullscreen(Data);
+                mainWindow.OverlayContents.Children.Add(mcFullscreen);
+                mainWindow.Overlay.Visibility = Visibility.Visible;
+            }
         }
     }
 }
