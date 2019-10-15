@@ -4,6 +4,7 @@ module.exports = {
     ws : null,
     init : function(db){
         this.ws = webSocket.createServer(function(conn) {
+			console.log("New WS connection");
             var hash = conn.path.slice(1);
             if(hash.length == 1) {
                 conn.close();
@@ -11,6 +12,16 @@ module.exports = {
             else{
                 checkIfLoggedIn(db, conn, hash, function(author) {
                     authenticated.push({conn : conn, author : author})
+					conn.on('close', function(code, reason) 
+					{
+						authenticated.splice(authenticated.indexOf({conn : conn, author : author}), 1);
+						console.log("WS client disconnected peacefully");
+					});
+					conn.on('error', function(err) 
+					{
+						authenticated.splice(authenticated.indexOf({conn : conn, author : author}), 1);
+						console.log("WS client disconnected with error");
+					});
                 });
             }
         });
@@ -23,7 +34,10 @@ module.exports = {
     },
     messageUpdate : function(message, type) {
         authenticated.forEach(elem => {
-            elem.conn.sendText(JSON.stringify({type : type, message : message}));
+			if(elem.readyState == elem.OPEN) 
+			{
+				elem.conn.sendText(JSON.stringify({type : type, message : message}));
+			}
         });
     }
 }
