@@ -176,7 +176,7 @@ module.exports = function(app, ws, db) {
         });
     });
 
-    app.get("/account/info", function(req, res) {
+    app.post("/account/info", function(req, res) {
         checkIfLoggedIn(req, res, function(author) {
             res.send(JSON.stringify({ID : author.ID, Name : author.Name, ImageUrl : author.ImageUrl}))
         });

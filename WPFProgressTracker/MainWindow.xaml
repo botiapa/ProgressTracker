@@ -68,61 +68,105 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style TargetType="Border" x:Key="SigninButton">
+                <Setter Property="Background" Value="#2f2f32"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#1b1b1e"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <!-- MESSAGE HOLDER -->
+        <Grid x:Name="MainPanel" Visibility="Hidden">
+            <!-- MESSAGE HOLDER -->
+            <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                <WrapPanel x:Name="MessageHolder" Background="#222831"/>
+            </ScrollViewer>
 
-        <ScrollViewer VerticalScrollBarVisibility="Hidden">
-            <WrapPanel x:Name="MessageHolder" Background="#222831"/>
-        </ScrollViewer>
+            <Border x:Name="NewTaskButton" MouseLeftButtonUp="NewTaskButtonClicked" Style="{StaticResource newTaskButton}" Width="50" Height="50" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20">
+                <TextBlock x:Name="NewTaskText" Style="{StaticResource higlightableText}" Text="+" FontFamily="{StaticResource Roboto Light}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="45"/>
+            </Border>
 
-        <Border x:Name="NewTaskButton" MouseLeftButtonUp="NewTaskButtonClicked" Style="{StaticResource newTaskButton}" Width="50" Height="50" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20">
-            <TextBlock x:Name="NewTaskText" Style="{StaticResource higlightableText}" Text="+" FontFamily="{StaticResource Roboto Light}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="45"/>
-        </Border>
-
-        <Border Name="NewTaskBorder" Background="#404040" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" CornerRadius="0,0,25,0" Width="0" Height="0">
-            <DockPanel>
-                <Grid DockPanel.Dock="Top">
-                    <TextBlock Text="New Task" Margin="10,10,0,10" Foreground="#eeeeee" FontFamily="{StaticResource Roboto Medium}" FontSize="14"/>
-                    <TextBlock Text="✖" HorizontalAlignment="Right" Margin="0,10,15,10" FontSize="10" Foreground="Gray" Cursor="Hand" MouseLeftButtonUp="NewTaskButtonClicked"/>
-                </Grid>
-                
-                <Border CornerRadius="0,0,25,0" Padding="10" Background="White">
-                    <Grid>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Border Grid.Row="0" BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="0,0,0,10">
-                                <DockPanel>
-                                    <TextBlock Text="Title" Foreground="Gray" FontSize="15" FontWeight="Normal" VerticalAlignment="Center"/>
-                                    <TextBox Name="TitleTextBox" VerticalAlignment="Center" FontSize="15" BorderThickness="0"/>
-                                </DockPanel>
-                            </Border>
-                            <TextBox TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" x:Name="ContentsTextBox" FontSize="15" Margin="0,15,0,0" Grid.Row="1" BorderThickness="0"/>
-                        </Grid>
-                        <Border Style="{StaticResource SendButton}" Cursor="Hand" CornerRadius="3" HorizontalAlignment="Left" VerticalAlignment="Bottom" MouseLeftButtonUp="onSendButtonClicked">
-                            <TextBlock FontFamily="{StaticResource Roboto Light}" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Text="Send" Foreground="#eeeeee" Padding="15,5,15,5"/>
-                        </Border>
+            <Border Name="NewTaskBorder" Background="#404040" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20" CornerRadius="0,0,25,0" Width="0" Height="0">
+                <DockPanel>
+                    <Grid DockPanel.Dock="Top">
+                        <TextBlock Text="New Task" Margin="10,10,0,10" Foreground="#eeeeee" FontFamily="{StaticResource Roboto Medium}" FontSize="14"/>
+                        <TextBlock Text="✖" HorizontalAlignment="Right" Margin="0,10,15,10" FontSize="10" Foreground="Gray" Cursor="Hand" MouseLeftButtonUp="NewTaskButtonClicked"/>
                     </Grid>
-                </Border>
-            </DockPanel>
-        </Border>
 
-        <Grid x:Name="Overlay" Background="{StaticResource OverlayBackgroundColor}" Visibility="Collapsed" MouseLeftButtonUp="onOverlayClick">
+                    <Border CornerRadius="0,0,25,0" Padding="10" Background="White">
+                        <Grid>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Border Grid.Row="0" BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="0,0,0,10">
+                                    <DockPanel>
+                                        <TextBlock Text="Title" Foreground="Gray" FontSize="15" FontWeight="Normal" VerticalAlignment="Center"/>
+                                        <TextBox Name="TitleTextBox" VerticalAlignment="Center" FontSize="15" BorderThickness="0"/>
+                                    </DockPanel>
+                                </Border>
+                                <TextBox TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True" x:Name="ContentsTextBox" FontSize="15" Margin="0,15,0,0" Grid.Row="1" BorderThickness="0"/>
+                            </Grid>
+                            <Border Style="{StaticResource SendButton}" Cursor="Hand" CornerRadius="3" HorizontalAlignment="Left" VerticalAlignment="Bottom" MouseLeftButtonUp="onSendButtonClicked">
+                                <TextBlock FontFamily="{StaticResource Roboto Light}" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Text="Send" Foreground="#eeeeee" Padding="15,5,15,5"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </DockPanel>
+            </Border>
+
+            <Grid x:Name="Overlay" Background="{StaticResource OverlayBackgroundColor}" Visibility="Collapsed" MouseLeftButtonUp="onOverlayClick">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="20*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="20*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Grid x:Name="OverlayContents" Grid.Row="1" Grid.Column="1"/>
+            </Grid>
+        </Grid>
+
+        <Grid x:Name="LoginPanel" Background="#222831">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="16*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="20*"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
-            <Grid x:Name="OverlayContents" Grid.Row="1" Grid.Column="1"/>
-        </Grid> 
+            <Border VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Width="350" MinHeight="150" BorderThickness="1" BorderBrush="Aqua" Padding="20" CornerRadius="3">
+                <StackPanel>
+                    <Grid Margin="0,15,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Username" VerticalAlignment="Bottom" Foreground="White" FontFamily="{StaticResource Roboto Light}" Margin="0,0,5,0"/>
+                        <Border Grid.Column="1" BorderThickness="0,0,0,1" BorderBrush="Aqua">
+                            <TextBox x:Name="UsernameInput" BorderThickness="0" Background="Transparent" Foreground="White" CaretBrush="White" FontSize="12"/>
+                        </Border>
+                    </Grid>
+                    <Grid Margin="0,15,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Password" VerticalAlignment="Bottom" Foreground="White" FontFamily="{StaticResource Roboto Light}" Margin="0,0,5,0"/>
+                        <Border Grid.Column="1" BorderThickness="0,0,0,1" BorderBrush="Aqua">
+                            <PasswordBox x:Name="PasswordInput" BorderThickness="0" Background="Transparent" Foreground="White" CaretBrush="White" FontSize="12"/>
+                        </Border>
+                    </Grid>
+                    <Border Style="{StaticResource SigninButton}" Cursor="Hand" CornerRadius="3" HorizontalAlignment="Center" MouseLeftButtonUp="onLoginButtonClicked" Margin="0,20,0,0">
+                        <TextBlock FontFamily="{StaticResource Roboto Light}" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Bottom" Text="Send" Foreground="#eeeeee" Padding="15,5,15,5"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

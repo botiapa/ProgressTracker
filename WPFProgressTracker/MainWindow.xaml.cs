@@ -2,6 +2,7 @@
 using APIProgressTracker.JSONObjects;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,6 +18,7 @@ namespace WPFProgressTracker
     public partial class MainWindow : Window
     {
         const string WS_ADDRESS = "ws://localhost:8001";
+        const string HASH_FILE = "login.hash";
 
         Storyboard NewTaskStoryboard;
         Storyboard NewTaskStoryboardReverse;
@@ -38,9 +40,27 @@ namespace WPFProgressTracker
 
         private async void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
-            var hash = await ProgressTrackerAPI.LoginAsync("alma123", "alma123");
-            if (hash != null)
-                ProgressTrackerAPI.hash = hash;
+            string hash = null;
+            if(File.Exists(HASH_FILE))
+            {
+                var file = File.ReadAllText(HASH_FILE);
+                if (await ProgressTrackerAPI.IsHashValid(file))
+                    hash = file;
+                else
+                    File.Delete(HASH_FILE);
+            }
+            if(hash == null)
+            {
+                hash = await loginProcess();
+                var sw = File.CreateText(HASH_FILE);
+                await sw.WriteAsync(hash);
+                sw.Close();
+            }
+
+            ProgressTrackerAPI.hash = hash;
+
+            LoginPanel.Visibility = Visibility.Collapsed;
+            MainPanel.Visibility = Visibility.Visible;
 
             ws = new GenericWebSocket(new Uri(WS_ADDRESS + "/" + hash));
             await ws.Connect();
@@ -94,6 +114,33 @@ namespace WPFProgressTracker
         {
             if (ws != null)
                 await ws.Close();
+        }
+
+        CancellationTokenSource waitingLoginTokenSource = new CancellationTokenSource();
+        private void onLoginButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if(!waitingLoginTokenSource.Token.IsCancellationRequested)
+                waitingLoginTokenSource.Cancel();
+        }
+
+        private async Task<string> loginProcess()
+        {
+            while(true)
+            {
+                await Task.Run(() => waitingLoginTokenSource.Token.WaitHandle.WaitOne());
+                UsernameInput.IsReadOnly = true;
+                PasswordInput.Focusable = false;
+                PasswordInput.IsHitTestVisible = false;
+                var login = await ProgressTrackerAPI.LoginAsync(UsernameInput.Text, PasswordInput.Password.ToString());
+                if (login != null)
+                    return login;
+                UsernameInput.Clear();
+                PasswordInput.Clear();
+                UsernameInput.IsReadOnly = false;
+                PasswordInput.Focusable = true;
+                PasswordInput.IsHitTestVisible = true;
+                waitingLoginTokenSource = new CancellationTokenSource();
+            }
         }
     }
 }

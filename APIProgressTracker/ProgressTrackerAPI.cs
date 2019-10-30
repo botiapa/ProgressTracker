@@ -80,6 +80,18 @@ namespace APIProgressTracker
             var result = await client.PostAsync(server + URL_DELETEMESSAGE, content);
             return result.IsSuccessStatusCode;
         }
+
+        /// <summary>
+        /// Check if a hash is valid or not
+        /// </summary>
+        /// <returns>True if hash is valid</returns>
+        public async static Task<bool> IsHashValid(string hash)
+        {
+            var parameters = new Dictionary<string, string>() { { "hash", hash } };
+            var content = new FormUrlEncodedContent(parameters);
+            var result = await client.PostAsync(server + URL_ACCOUNTINFO, content);
+            return result.IsSuccessStatusCode;
+        }
         #endregion
     }
 
