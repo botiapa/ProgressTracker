@@ -15,10 +15,42 @@ namespace WPFProgressTracker.Controls
 {
     public class RoundedProgressBar : Control
     {
-
+        static RoundedProgressBar ProgressBarBeingEdited;
+        MouseButtonState leftMouseLastStatus = MouseButtonState.Released;
         public RoundedProgressBar() : base()
         {
             this.SizeChanged += onSizeChanged;
+        }
+
+        private void onWindowMouseLeave(object sender, MouseEventArgs e)
+        {
+            onWindowLeftMouseUp(null, null);
+        }
+
+        private void onWindowMouseMove(object sender, MouseEventArgs e)
+        {
+            if (ProgressBarBeingEdited != null && ProgressBarBeingEdited != this)
+                return;
+            if ((IsMouseOver && e.LeftButton == MouseButtonState.Pressed) || leftMouseLastStatus == MouseButtonState.Pressed)
+            {
+                leftMouseLastStatus = MouseButtonState.Pressed;
+                var progressPercent = e.GetPosition(this).X / ActualWidth; // Calculated progress in percentage
+                progressPercent = progressPercent > 0.985 ? 1 : progressPercent; // Skip to the end if very close
+                progressPercent = progressPercent < 0.015 ? 0 : progressPercent; // Skip to the start if very close
+                var difference = Math.Abs(MinProgress - MaxProgress); // Max difference
+                Progress = MinProgress + (difference * progressPercent);
+                ProgressBarBeingEdited = this;
+            }
+        }
+
+        private void onWindowLeftMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (leftMouseLastStatus == MouseButtonState.Pressed)
+            {
+                OnProgressBarUpdate(this, null);
+                ProgressBarBeingEdited = null;
+            }
+            leftMouseLastStatus = MouseButtonState.Released;
         }
 
         private void onSizeChanged(object sender, SizeChangedEventArgs e)
@@ -79,21 +111,23 @@ namespace WPFProgressTracker.Controls
             var editable = (bool)e.NewValue;
             var progressBar = (RoundedProgressBar)obj;
             if (editable)
-                progressBar.MouseMove += onMouseMove;
-            else
-                progressBar.MouseMove -= onMouseMove;
-        }
-
-        private static void onMouseMove(object sender, MouseEventArgs e)
-        {
-            if(e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
             {
-                var progressBar = (RoundedProgressBar)sender;
-                var progressPercent = e.GetPosition(progressBar).X / progressBar.ActualWidth; // Calculated progress in percentage
-                var difference = Math.Abs(progressBar.MinProgress - progressBar.MaxProgress); // Max difference
-                progressBar.Progress = progressBar.MinProgress + (difference * progressPercent);
+                Application.Current.MainWindow.MouseLeftButtonUp += progressBar.onWindowLeftMouseUp;
+                Application.Current.MainWindow.MouseMove += progressBar.onWindowMouseMove;
+                Application.Current.MainWindow.MouseLeave += progressBar.onWindowMouseLeave;
+                progressBar.Cursor = Cursors.SizeWE;
+            }
+
+            else
+            {
+                Application.Current.MainWindow.MouseLeftButtonUp -= progressBar.onWindowLeftMouseUp;
+                Application.Current.MainWindow.MouseMove -= progressBar.onWindowMouseMove;
+                Application.Current.MainWindow.MouseLeave += progressBar.onWindowMouseLeave;
+                progressBar.Cursor = Cursors.Arrow;
             }
         }
+
+        public event EventHandler OnProgressBarUpdate;
 
         /// <summary>
         /// If any properties that are required to calculate the width is changed then this is called.
@@ -120,6 +154,4 @@ namespace WPFProgressTracker.Controls
             return  normalizedProgress / normalizedMaxvalue;
         }
     }
-
-    
 }

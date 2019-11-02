@@ -39,6 +39,13 @@ namespace WPFProgressTracker.Controls
             DataContext = this;
 
             setContents(message);
+            ProgressBar.OnProgressBarUpdate += onProgressBarUpdated;
+        }
+
+        private async void onProgressBarUpdated(object sender, EventArgs e)
+        {
+            var pb = (RoundedProgressBar)sender;
+            await ProgressTrackerAPI.UpdateMessage(ID, null, null, (int)pb.Progress);
         }
 
         public void updateContents(Message message) => setContents(message);
@@ -53,6 +60,20 @@ namespace WPFProgressTracker.Controls
 
             Data = message;
             ID = message.ID;
+
+            var main = (MainWindow)Application.Current.MainWindow;
+            if (main.loggedInAuthor.ID == message.Author.ID)
+            {
+                MessageOptions.Visibility = Visibility.Visible;
+                ProgressBar.Editable = true;
+            }
+                
+            else
+            {
+                MessageOptions.Visibility = Visibility.Collapsed;
+                ProgressBar.Editable = false;
+            }
+                
         }
 
         private async void onDeleteButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -65,9 +86,14 @@ namespace WPFProgressTracker.Controls
                 Console.WriteLine("AN ERROR HAS OCCURED. Cannot Delete!");
         }
 
-        private void onMessageControlClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void onCompleteButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(!DeleteButton.IsMouseOver)
+            ProgressBar.Progress = ProgressBar.MaxProgress;
+        }
+
+        private void onMessageControlClicked(object sender, RoutedEventArgs e)
+        {
+            if (!MessageOptions.IsMouseOver && !ProgressBar.IsMouseOver)
             {
                 var mainWindow = (MainWindow)Application.Current.MainWindow;
                 var mcFullscreen = new MessageControlFullscreen(Data);

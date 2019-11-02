@@ -52,7 +52,17 @@ namespace APIProgressTracker
             return null;
         }
 
-        
+        public async static Task<Author> GetAuthorInfo()
+        {
+            var parameters = new Dictionary<string, string>() { { "hash", hash }};
+            var content = new FormUrlEncodedContent(parameters);
+            var result = await client.PostAsync(server + URL_ACCOUNTINFO, content);
+            if (result.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<Author>(await result.Content.ReadAsStringAsync());
+            return null;
+        }
+
+
         /// <summary>
         /// Adds a new message to the database
         /// </summary>
@@ -78,6 +88,24 @@ namespace APIProgressTracker
             var parameters = new Dictionary<string, string>() { { "hash", hash }, { "ID", id } };
             var content = new FormUrlEncodedContent(parameters);
             var result = await client.PostAsync(server + URL_DELETEMESSAGE, content);
+            return result.IsSuccessStatusCode;
+        }
+
+        /// <summary>
+        /// Edit an existing message
+        /// </summary>
+        /// <returns>True on success</returns>
+        public async static Task<bool> UpdateMessage(string ID, string title = null, string contents = null, int? progress = null)
+        {
+            var parameters = new Dictionary<string, string>() { { "hash", hash }, { "ID", ID } };
+            if (!String.IsNullOrWhiteSpace(title))
+                parameters.Add("Title", title);
+            if (contents != null)
+                parameters.Add("Contents", contents);
+            if (progress != null)
+                parameters.Add("Progress", progress.ToString());
+            var content = new FormUrlEncodedContent(parameters);
+            var result = await client.PostAsync(server + URL_UPDATEMESSAGE, content);
             return result.IsSuccessStatusCode;
         }
 

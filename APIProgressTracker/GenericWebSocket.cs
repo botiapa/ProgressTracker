@@ -19,12 +19,17 @@ namespace APIProgressTracker
         public GenericWebSocket(Uri address)
         {
             this.address = address;
-            ws = new ClientWebSocket();
         }
 
         public async Task<bool> Connect()
         {
-            await ws.ConnectAsync(address, new CancellationToken());
+            ws = new ClientWebSocket();
+            try
+            {
+                await ws.ConnectAsync(address, new CancellationToken());
+            }
+            catch(WebSocketException) { }
+            
             if (ws.State == WebSocketState.Open)
             {
                 receiveTokenSource = new CancellationTokenSource();
@@ -70,6 +75,15 @@ namespace APIProgressTracker
                     msgResult = await ws.ReceiveAsync(segment, receiveToken);
                 }
                 catch (OperationCanceledException) { }
+                catch (WebSocketException)
+                {
+                    if(ws.State == WebSocketState.Aborted && ws.CloseStatus == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine(String.Format("WebSocket connection lost reconnecting"));
+                        await Connect();
+                        break;
+                    }
+                }
 
                 if (msgResult != null)
                 {

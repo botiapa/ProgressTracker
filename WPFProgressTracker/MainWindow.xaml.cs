@@ -30,6 +30,7 @@ namespace WPFProgressTracker
         /// </summary>
         public Dictionary<string, MessageControl> MessageControls = new Dictionary<string, MessageControl>();
         public GenericWebSocket ws;
+        public Author loggedInAuthor;
 
         public MainWindow()
         {
@@ -58,15 +59,24 @@ namespace WPFProgressTracker
             }
 
             ProgressTrackerAPI.hash = hash;
+            loggedInAuthor = await ProgressTrackerAPI.GetAuthorInfo();
 
             LoginPanel.Visibility = Visibility.Collapsed;
             MainPanel.Visibility = Visibility.Visible;
 
             ws = new GenericWebSocket(new Uri(WS_ADDRESS + "/" + hash));
+            ws.OnWebSocketConnected += onWSConnected;
             await ws.Connect();
             new WebSocketHandler(ws, this);
+        }
 
-            await ReloadUI();
+        private async void onWSConnected(object? sender, EventArgs e)
+        {
+            await Dispatcher.BeginInvoke(async () =>
+            {
+                await ReloadUI();
+            });
+            
         }
 
         public async Task ReloadUI()

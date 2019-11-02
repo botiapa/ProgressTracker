@@ -3,6 +3,7 @@ const multer  = require('multer')
 const upload = multer({ dest: 'uploads/', fileFilter: FileFilter})
 const fs = require('fs');
 
+
 module.exports = function(app, ws, db) {
     app.get("/message", (req, res) => {
         db.query('SELECT * from messages', function (error, msgResults, fields) {
@@ -47,7 +48,7 @@ module.exports = function(app, ws, db) {
                 }
             });
         });
-    });
+    });	
     app.post("/message/update", function(req, res) {
         checkIfLoggedIn(req, res, function(author) {
             if(!req.body.ID) {
@@ -55,27 +56,34 @@ module.exports = function(app, ws, db) {
                 return;
             }
             db.query("SELECT * FROM messages WHERE ID = ?", [req.body.ID], function(error, results, fields) {
-                if(error == null && results.length == 1) {
+                if(error == null && results.length == 1 && author.ID == results[0].Author) {
                     let title = req.body.Title || results[0].Title;
                     let contents = req.body.Contents || results[0].Contents;
                     let progress = req.body.Progress || results[0].Progress;
-                    db.query("UPDATE messages SET Title = ?, Contents = ?, Progress = ? WHERE ID = ?", [title, contents, progress, req.body.ID], function(error, results, fields) { // Update the new message on all connected clients
-                        if(error == null) {
-                            res.sendStatus(200);
-                        }
-                        else {
-                            console.log(error);
-                            res.sendStatus(500);
-                            return;
-                        }
+                    db.query("UPDATE messages SET Title = ?, Contents = ?, Progress = ? WHERE ID = ?", [title, contents, progress, req.body.ID], function(error, __results, fields) { // Update the new message on all connected clients
+						if(error == null) {
+							res.sendStatus(200);
+							db.query("SELECT * FROM messages WHERE ID = ?", [req.body.ID], function(error, results, fields) {
+								db.query("SELECT ID,Name,ImageUrl FROM authors WHERE ID = ?", [results[0].Author], function(error, authors, fields) 
+								{
+									let authorObject = {ID : authors[0].ID, Name : authors[0].Name, ImageUrl : authors[0].ImageUrl};
+									ws.messageUpdate({ID : results[0].ID, Title : results[0].Title, Contents : results[0].Contents, Progress : results[0].Progress, Author : authorObject, LastModified : results[0].Last_Modified}, "UPDATE");
+								})
+							})
+						}
+						else {
+							console.log(error);
+							res.sendStatus(500);
+							return;
+						}
                     })
-					db.query("SELECT ID,Name,ImageUrl FROM authors WHERE ID = ?", [results[0].Author], function(error, authors, fields) 
-					{
-						let authorObject = {ID : authors[0].ID, Name : authors[0].Name, ImageUrl : authors[0].ImageUrl};
-						ws.messageUpdate({ID : results[0].ID, Title : results[0].Title, Contents : results[0].Contents, Progress : results[0].Progress, Author : authorObject, LastModified : results[0].Last_Modified}, "UPDATE");
-					})
+					
                     
                 }
+				else if(error == null && author.ID != results[0].ID) 
+				{
+					res.sendStatus(403);
+				}
                 else if(error == null) {
                     res.sendStatus(404);
                 }
@@ -201,7 +209,12 @@ module.exports = function(app, ws, db) {
             return;
         }
         db.query("SELECT * FROM authors WHERE hash = ?", [req.body.hash], function(error, results, fields) {
-            if(results.length == 1) {
+            if(error || results === undefined) 
+			{
+				res.sendStatus(401);
+				return;
+			} 
+			if(results.length == 1) {
                 callback(results[0]);
                 return;
             }
