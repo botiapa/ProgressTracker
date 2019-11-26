@@ -8,6 +8,7 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using WPFProgressTracker.UserControls;
+using System.IO;
 
 namespace WPFProgressTracker.Controls
 {
@@ -54,8 +55,13 @@ namespace WPFProgressTracker.Controls
         {
             Title = message.Title;
             Description = message.Contents;
+            Console.WriteLine(ProgressTrackerAPI.server);
+            
             if (!String.IsNullOrWhiteSpace(message.Author.ImageUrl))
-                Avatar.UriSource = new Uri(message.Author.ImageUrl); // Set the image source if it's not empty or null
+                Avatar = new BitmapImage(new Uri(message.Author.ImageUrl)); // Set the image source if it's not empty or null
+            else
+                Avatar = new BitmapImage(new Uri(ProgressTrackerAPI.server + "/uploads/defaultAvatar.png"));
+            
             Progress = message.Progress;
 
             Data = message;
@@ -91,7 +97,7 @@ namespace WPFProgressTracker.Controls
             ProgressBar.Progress = ProgressBar.MaxProgress;
         }
 
-        private void onMessageControlClicked(object sender, RoutedEventArgs e)
+        private void onMessageControlClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (!MessageOptions.IsMouseOver && !ProgressBar.IsMouseOver)
             {

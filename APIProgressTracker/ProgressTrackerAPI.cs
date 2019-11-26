@@ -12,8 +12,9 @@ namespace APIProgressTracker
 {
     public static class ProgressTrackerAPI
     {
-        static string server = "http://localhost:8000";
-        const uint PORT = 8000;
+        //public static string server = "http://localhost";
+        public static string server = "https://progress-tracker-server.herokuapp.com";
+        const uint PORT = 80;
 
         // URLS
         const string URL_GETMESSAGES = "/message";

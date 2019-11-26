@@ -46,7 +46,9 @@ namespace WPFProgressTracker.UserControls
             Title = message.Title;
             Description = message.Contents;
             if (!String.IsNullOrWhiteSpace(message.Author.ImageUrl))
-                Avatar.UriSource = new Uri(message.Author.ImageUrl); // Set the image source if it's not empty or null
+                Avatar = new BitmapImage(new Uri(message.Author.ImageUrl)); // Set the image source if it's not empty or null
+            else
+                Avatar = new BitmapImage(new Uri(ProgressTrackerAPI.server + "/uploads/defaultAvatar.png"));
             Progress = message.Progress;
 
             this.ID = message.ID;
@@ -61,6 +63,11 @@ namespace WPFProgressTracker.UserControls
             }
             else
                 Console.WriteLine("AN ERROR HAS OCCURED. Cannot Delete!");
+        }
+
+        private void onSendCommentButtonClicked(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

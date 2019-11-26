@@ -17,7 +17,8 @@ namespace WPFProgressTracker
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string WS_ADDRESS = "ws://localhost:8001";
+        const string WS_ADDRESS = "ws://progress-tracker-server.herokuapp.com";
+        //const string WS_ADDRESS = "ws://localhost";
         const string HASH_FILE = "login.hash";
 
         Storyboard NewTaskStoryboard;

@@ -23,90 +23,75 @@
         </Style>
     </UserControl.Resources>
 
-    <Button Click="onMessageControlClicked" Background="Transparent" BorderThickness="0" BorderBrush="Transparent" Padding="0" Margin="15">
-        <Button.Style>
-            <Style TargetType="{x:Type Button}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="Transparent">
-                                <ContentPresenter/>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </Button.Style>
-        <Border Style="{StaticResource MessageControlBorder}" x:Name="MessageControlBorder" CornerRadius="4" Background="#393e46" Width="325">
-            <Border.RenderTransformOrigin>
-                <Point X="0.5" Y="0.5"/>
-            </Border.RenderTransformOrigin>
-            <Border.RenderTransform>
-                <ScaleTransform x:Name="MCScaleTransform"/>
-            </Border.RenderTransform>
-            <Border.Triggers>
-                <!-- FIXME: Animations gets called again even if the mouse stays over the element-->
-                <EventTrigger RoutedEvent="MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" From="1" To="1.015" Duration="0:0:0.15"/>
-                            <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1" To="1.015" Duration="0:0:0.15"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" From="1.015" To="1" Duration="0:0:0.10" AutoReverse="False"/>
-                            <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1.015" To="1" Duration="0:0:0.10" AutoReverse="False"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Border.Triggers>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0">
-                    <Border DockPanel.Dock="Top" CornerRadius="4,4,0,0" Background="#eeeeee" MinHeight="28">
-                        <TextBlock Text="{Binding Title}" VerticalAlignment="Center" Margin="5,3,5,0" FontSize="18" FontFamily="{StaticResource Roboto Bold}" Foreground="Black"/>
+    <Border MouseLeftButtonUp="onMessageControlClicked" Style="{StaticResource MessageControlBorder}" x:Name="MessageControlBorder" CornerRadius="4" Background="#393e46" Width="325" Margin="15">
+        <Border.RenderTransformOrigin>
+            <Point X="0.5" Y="0.5"/>
+        </Border.RenderTransformOrigin>
+        <Border.RenderTransform>
+            <ScaleTransform x:Name="MCScaleTransform"/>
+        </Border.RenderTransform>
+        <Border.Triggers>
+            <!-- FIXME: Animations gets called again even if the mouse stays over the element-->
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" From="1" To="1.015" Duration="0:0:0.15"/>
+                        <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1" To="1.015" Duration="0:0:0.15"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleX)" From="1.015" To="1" Duration="0:0:0.10" AutoReverse="False"/>
+                        <DoubleAnimation Storyboard.TargetName="MCScaleTransform" Storyboard.TargetProperty="(ScaleTransform.ScaleY)" From="1.015" To="1" Duration="0:0:0.10" AutoReverse="False"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Border.Triggers>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Border DockPanel.Dock="Top" CornerRadius="4,4,0,0" Background="#eeeeee" MinHeight="28">
+                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" Margin="5,3,5,0" FontSize="18" FontFamily="{StaticResource Roboto Bold}" Foreground="Black"/>
+                </Border>
+
+                <Grid DockPanel.Dock="Right" Margin="8,10,8,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" BorderBrush="#d65a31" BorderThickness="1" VerticalAlignment="Top" CornerRadius="50">
+                        <Ellipse VerticalAlignment="Top" Width="50" Height="50">
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Avatar}" />
+                            </Ellipse.Fill>
+                        </Ellipse>
                     </Border>
 
-                    <Grid DockPanel.Dock="Right" Margin="8,10,8,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="1" TextWrapping="WrapWithOverflow" FontSize="15" Foreground="#eeeeee" VerticalAlignment="Center" FontFamily="{StaticResource Roboto Light}" Margin="10,0,0,10" Text="{Binding Description}"/>
+                </Grid>
+            </StackPanel>
 
-                        <Border Grid.Column="0" BorderBrush="#d65a31" BorderThickness="1" VerticalAlignment="Top" CornerRadius="50">
-                            <Ellipse VerticalAlignment="Top" Width="50" Height="50">
-                                <Ellipse.Fill>
-                                    <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Avatar}"/>
-                                </Ellipse.Fill>
-                            </Ellipse>
-                        </Border>
+            <StackPanel Visibility="Collapsed" x:Name="MessageOptions" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,13" Orientation="Horizontal">
+                <Border Style="{StaticResource HoverableBorder}" Width="20" CornerRadius="3" Padding="2" MouseLeftButtonUp="onCompleteButtonClicked" Margin="0,0,3,0">
+                    <TextBlock HorizontalAlignment="Center" Text="✓" Foreground="Black" FontFamily="{StaticResource Roboto Light}"/>
+                </Border>
+                <Border Style="{StaticResource HoverableBorder}" Width="20" CornerRadius="3" Padding="2" MouseLeftButtonUp="onDeleteButtonClicked">
+                    <TextBlock HorizontalAlignment="Center" Text="🗑️" Foreground="Black" FontFamily="{StaticResource Roboto Light}"/>
+                </Border>
+            </StackPanel>
 
-                        <TextBlock Grid.Column="1" TextWrapping="WrapWithOverflow" FontSize="15" Foreground="#eeeeee" VerticalAlignment="Center" FontFamily="{StaticResource Roboto Light}" Margin="10,0,0,10" Text="{Binding Description}"/>
-                    </Grid>
-                </StackPanel>
-
-                <StackPanel Visibility="Collapsed" x:Name="MessageOptions" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,13" Orientation="Horizontal">
-                    <Border Style="{StaticResource HoverableBorder}" Width="20" CornerRadius="3" Padding="2" MouseLeftButtonUp="onCompleteButtonClicked" Margin="0,0,3,0">
-                        <TextBlock HorizontalAlignment="Center" Text="✓" Foreground="Black" FontFamily="{StaticResource Roboto Light}"/>
-                    </Border>
-                    <Border Style="{StaticResource HoverableBorder}" Width="20" CornerRadius="3" Padding="2" MouseLeftButtonUp="onDeleteButtonClicked">
-                        <TextBlock HorizontalAlignment="Center" Text="🗑️" Foreground="Black" FontFamily="{StaticResource Roboto Light}"/>
-                    </Border>
-                </StackPanel>
-
-                <!-- PROGRESS BAR -->
-                <local:RoundedProgressBar Height="8" x:Name="ProgressBar" Editable="True" VerticalAlignment="Bottom" Grid.Row="1" Margin="0,5,0,0" Progress="{Binding Progress}" CornerRadius="0,0,4,4"/>
+            <!-- PROGRESS BAR -->
+            <local:RoundedProgressBar Height="8" x:Name="ProgressBar" Editable="True" VerticalAlignment="Bottom" Grid.Row="1" Margin="0,5,0,0" Progress="{Binding Progress}" CornerRadius="0,0,4,4"/>
 
 
 
-            </Grid>
+        </Grid>
 
-        </Border>
-    </Button>
+    </Border>
 </UserControl>

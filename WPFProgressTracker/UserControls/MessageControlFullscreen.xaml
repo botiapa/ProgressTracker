@@ -37,6 +37,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
                 <StackPanel Grid.Row="0">
@@ -77,7 +78,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="1">
-                <Border Height="0.5" Background="Gray" Margin="5,0,5,0"/>
+                <Border Height="2" Margin="5,0,5,5" CornerRadius="0" BorderThickness="5" BorderBrush="Gray"/>
                 <ScrollViewer VerticalScrollBarVisibility="Disabled">
                     <StackPanel x:Name="Comments">
                         <local:CommentControl/>
@@ -86,6 +87,21 @@
                         <local:CommentControl/>
                     </StackPanel>
                 </ScrollViewer>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2">
+                <Border Height="2" Margin="5,0,5,5" CornerRadius="0" BorderThickness="5" BorderBrush="Gray"/>
+                <Border Margin="15" Background="Gray" CornerRadius="8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Margin="5,5,5,5" FontSize="15" FontFamily="{StaticResource Roboto Thin}" Foreground="White" MinHeight="40" MaxHeight="150" BorderThickness="0" Background="Transparent" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap"/>
+                        <Polygon MouseLeftButtonUp="onSendCommentButtonClicked" Grid.Column="1" Cursor="Hand" Margin="0,5,10,5" Stretch="Uniform" Fill="White" Width="30" Height="40" Points="0,497.25 535.5,267.75 0,38.25 0,216.75 382.5,267.75 0,318.75 "/>
+                    </Grid>
+                </Border>
+                
             </StackPanel>
         </Grid>
 
