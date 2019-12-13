@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +63,7 @@ namespace APIProgressTracker
             System.Diagnostics.Debug.WriteLine(String.Format("WebSocket closed with address: {0}", address));
         }
 
-        protected virtual async void waitForMessage(CancellationToken receiveToken, int bufferSize = 4096)
+        protected virtual async void waitForMessage(CancellationToken receiveToken, int bufferSize = 2048)
         {
             while (!receiveToken.IsCancellationRequested)
             {
@@ -70,9 +71,15 @@ namespace APIProgressTracker
                 var segment = new ArraySegment<byte>(buffer);
 
                 WebSocketReceiveResult msgResult = null;
+                string receivedString = String.Empty;
                 try
                 {
-                    msgResult = await ws.ReceiveAsync(segment, receiveToken);
+                    do
+                    {
+                        msgResult = await ws.ReceiveAsync(segment, receiveToken);
+                        receivedString += Encoding.UTF8.GetString(buffer.Take(msgResult.Count).ToArray());
+                    }
+                    while (!msgResult.EndOfMessage);
                 }
                 catch (OperationCanceledException) { }
                 catch (WebSocketException)
@@ -86,10 +93,9 @@ namespace APIProgressTracker
                 }
 
                 if (msgResult != null)
-                {
-                    string msgString = Encoding.UTF8.GetString(buffer.Take(msgResult.Count).ToArray());
-                    MessageReceived(msgString);
-                    System.Diagnostics.Debug.WriteLine(String.Format("WebSocket message received: {0}", msgString));
+                {                 
+                    MessageReceived(receivedString);
+                    System.Diagnostics.Debug.WriteLine(String.Format("WebSocket message received: {0}", receivedString));
                 }
             }
         }
@@ -125,6 +131,35 @@ namespace APIProgressTracker
         {
             MessageReceivedHandler handler = OnMessageReceived;
             handler?.Invoke(this, new MessageReceivedEventArgs(msg));
+        }
+
+        private static bool isValidJson(string strInput)
+        {
+            strInput = strInput.Trim();
+            if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
+                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
+            {
+                try
+                {
+                    var obj = JToken.Parse(strInput);
+                    return true;
+                }
+                catch (JsonReaderException jex)
+                {
+                    //Exception in parsing json
+                    Console.WriteLine(jex.Message);
+                    return false;
+                }
+                catch (Exception ex) //some other exception
+                {
+                    Console.WriteLine(ex.ToString());
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
     }
     public class MessageReceivedEventArgs : EventArgs

@@ -3,6 +3,7 @@ using APIProgressTracker.JSONObjects;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -142,9 +143,18 @@ namespace WPFProgressTracker
                 UsernameInput.IsReadOnly = true;
                 PasswordInput.Focusable = false;
                 PasswordInput.IsHitTestVisible = false;
-                var login = await ProgressTrackerAPI.LoginAsync(UsernameInput.Text, PasswordInput.Password.ToString());
+                string login = null;
+                try
+                {
+                    login = await ProgressTrackerAPI.LoginAsync(UsernameInput.Text, PasswordInput.Password.ToString());
+                }
+                catch (TaskCanceledException) { }
+                catch(HttpRequestException) { }
+
                 if (login != null)
                     return login;
+                else
+                    MessageBox.Show("Login failed. Please try again.", "Login failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 UsernameInput.Clear();
                 PasswordInput.Clear();
                 UsernameInput.IsReadOnly = false;
